@@ -1,0 +1,36 @@
+{
+  "theme": {
+    "dark": {
+      "background": {
+        "value": "#000000",
+        "type": "color",
+        "description": "Dark mode background"
+      },
+      "foreground": {
+        "value": "#f8f8f8",
+        "type": "color",
+        "description": "Dark mode foreground text"
+      },
+      "border": {
+        "value": "#404045",
+        "type": "color"
+      },
+      "input": {
+        "value": "#404045",
+        "type": "color"
+      },
+      "card": {
+        "value": "#171717",
+        "type": "color"
+      },
+      "muted": {
+        "value": "#26262b",
+        "type": "color"
+      },
+      "accent": {
+        "value": "#26262b",
+        "type": "color"
+      }
+    }
+  }
+}

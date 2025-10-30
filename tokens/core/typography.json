@@ -1,0 +1,31 @@
+{
+  "typography": {
+    "tracking": {
+      "normal": {
+        "value": "-0.025em",
+        "type": "dimension",
+        "description": "Normal letter spacing used across the design system"
+      },
+      "tighter": {
+        "value": "calc(-0.025em - 0.05em)",
+        "type": "dimension"
+      },
+      "tight": {
+        "value": "calc(-0.025em - 0.025em)",
+        "type": "dimension"
+      },
+      "wide": {
+        "value": "calc(-0.025em + 0.025em)",
+        "type": "dimension"
+      },
+      "wider": {
+        "value": "calc(-0.025em + 0.05em)",
+        "type": "dimension"
+      },
+      "widest": {
+        "value": "calc(-0.025em + 0.1em)",
+        "type": "dimension"
+      }
+    }
+  }
+}

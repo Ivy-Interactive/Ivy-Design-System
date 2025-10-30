@@ -1,0 +1,29 @@
+{
+  "radius": {
+    "base": {
+      "value": "0.5rem",
+      "type": "dimension",
+      "description": "Base border radius"
+    },
+    "sm": {
+      "value": "calc(0.5rem - 4px)",
+      "type": "dimension",
+      "description": "Small border radius"
+    },
+    "md": {
+      "value": "calc(0.5rem - 2px)",
+      "type": "dimension",
+      "description": "Medium border radius"
+    },
+    "lg": {
+      "value": "0.5rem",
+      "type": "dimension",
+      "description": "Large border radius"
+    },
+    "xl": {
+      "value": "calc(0.5rem + 4px)",
+      "type": "dimension",
+      "description": "Extra large border radius"
+    }
+  }
+}

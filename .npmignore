@@ -1,0 +1,11 @@
+tokens/
+scripts/
+examples/
+docs/
+tsconfig.json
+.git
+.gitignore
+*.log
+.DS_Store
+node_modules/
+src/

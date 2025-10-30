@@ -1,0 +1,57 @@
+{
+  "name": "ivy-design-system",
+  "version": "0.1.0",
+  "description": "Modular multi-product token-based design system for Ivy products",
+  "type": "module",
+  "main": "dist/js/index.js",
+  "types": "dist/js/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/js/index.d.ts",
+      "default": "./dist/js/index.js"
+    },
+    "./css/core": "./dist/css/core.css",
+    "./css/ivy-web": "./dist/css/ivy-web.css",
+    "./css/ivy-framework": "./dist/css/ivy-framework.css",
+    "./css/light": "./dist/css/light.css",
+    "./css/dark": "./dist/css/dark.css",
+    "./tailwind/core": "./dist/tailwind/core.js",
+    "./tailwind/ivy-web": "./dist/tailwind/ivy-web.js",
+    "./tailwind/ivy-framework": "./dist/tailwind/ivy-framework.js",
+    "./tokens": "./dist/tokens/index.json"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsx scripts/build.ts",
+    "dev": "tsx scripts/build.ts --watch",
+    "clean": "rm -rf dist",
+    "prepublishOnly": "npm run clean && npm run build",
+    "test": "echo \"No tests yet\" && exit 0"
+  },
+  "keywords": [
+    "design-tokens",
+    "design-system",
+    "tailwind",
+    "css-variables",
+    "ivy",
+    "tokens"
+  ],
+  "author": "Ivy Interactive",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:Ivy-Interactive/Ivy-Design-System.git"
+  },
+  "homepage": "https://github.com/Ivy-Interactive/Ivy-Design-System#readme",
+  "bugs": {
+    "url": "https://github.com/Ivy-Interactive/Ivy-Design-System/issues"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.3"
+  }
+}

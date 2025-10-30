@@ -1,0 +1,11 @@
+{
+  "typography": {
+    "fontFamily": {
+      "mono": {
+        "value": "IBM Plex Mono, monospace",
+        "type": "fontFamily",
+        "description": "Monospace font family for Ivy-Web"
+      }
+    }
+  }
+}

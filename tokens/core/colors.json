@@ -1,0 +1,77 @@
+{
+  "color": {
+    "brand": {
+      "primary": {
+        "value": "#00cc92",
+        "type": "color",
+        "description": "Primary brand color - Teal"
+      },
+      "primary-light": {
+        "value": "#00d18e",
+        "type": "color",
+        "description": "Lighter variant of primary brand color"
+      },
+      "primary-dark": {
+        "value": "#05986a",
+        "type": "color",
+        "description": "Darker variant of primary brand color"
+      },
+      "teal": {
+        "50": {
+          "value": "#f0fdf4",
+          "type": "color"
+        },
+        "100": {
+          "value": "#d4f6ed",
+          "type": "color"
+        },
+        "200": {
+          "value": "#ccf7ec",
+          "type": "color"
+        },
+        "300": {
+          "value": "#80e6c9",
+          "type": "color"
+        },
+        "400": {
+          "value": "#5be9c7",
+          "type": "color"
+        },
+        "500": {
+          "value": "#00d18e",
+          "type": "color"
+        },
+        "600": {
+          "value": "#00cc92",
+          "type": "color"
+        },
+        "700": {
+          "value": "#05986a",
+          "type": "color"
+        },
+        "800": {
+          "value": "#04694a",
+          "type": "color"
+        },
+        "900": {
+          "value": "#034a33",
+          "type": "color"
+        }
+      },
+      "mint": {
+        "100": {
+          "value": "#ccf7ec",
+          "type": "color"
+        },
+        "200": {
+          "value": "#97f0d9",
+          "type": "color"
+        },
+        "300": {
+          "value": "#5be9c7",
+          "type": "color"
+        }
+      }
+    }
+  }
+}
