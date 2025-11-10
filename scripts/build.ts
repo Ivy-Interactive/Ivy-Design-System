@@ -1,4 +1,5 @@
 import { generateCSS } from './generate-css.js';
+import { generateFlatCSS } from './generate-flat-css.js';
 import { generateTailwind } from './generate-tailwind.js';
 import { generateTypes } from './generate-types.js';
 import { generateCSharp } from './generate-csharp.js';
@@ -126,6 +127,10 @@ async function build() {
 
     await generateCSS(lightTheme, 'dist/css/light.css');
     await generateCSS(darkTheme, 'dist/css/dark.css', true);
+
+    // Generate flat CSS for frontend compatibility
+    await generateFlatCSS(ivyFrameworkMerged, 'dist/css/ivy-framework-flat.css');
+    await generateFlatCSS(darkTheme, 'dist/css/dark-flat.css', true);
     console.log('');
 
     // Generate Tailwind configs
