@@ -1,0 +1,52 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+
+    <!-- Package Metadata -->
+    <PackageId>Ivy.DesignSystem</PackageId>
+    <Version>1.0.0</Version>
+    <Authors>Ivy Interactive</Authors>
+    <Company>Ivy Interactive</Company>
+    <Description>Modular multi-product token-based design system for Ivy products. Provides design tokens as C# static classes for use in ASP.NET applications.</Description>
+    <Copyright>Copyright (c) 2025 Ivy Interactive</Copyright>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+
+    <!-- Repository Information -->
+    <PackageProjectUrl>https://github.com/Ivy-Interactive/Ivy-Design-System</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/Ivy-Interactive/Ivy-Design-System.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+
+    <!-- Package Tags -->
+    <PackageTags>design-tokens;design-system;tokens;ivy;css-variables;theming</PackageTags>
+
+    <!-- Documentation -->
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\Ivy.DesignSystem.xml</DocumentationFile>
+
+    <!-- NuGet Package Settings -->
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Include all generated C# files from dist/csharp -->
+    <Compile Include="dist/csharp/CoreTokens.cs" />
+    <Compile Include="dist/csharp/IvyFrameworkTokens.cs" />
+    <Compile Include="dist/csharp/IvyWebTokens.cs" />
+    <Compile Include="dist/csharp/LightThemeTokens.cs" />
+    <Compile Include="dist/csharp/DarkThemeTokens.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Include README in package -->
+    <None Include="README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,112 @@
+name: Publish Packages
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'  # Trigger on version tags like v1.0.0
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Extract version from tag
+        id: extract_version
+        run: |
+          TAG_NAME=${GITHUB_REF#refs/tags/v}
+          echo "VERSION=$TAG_NAME" >> $GITHUB_OUTPUT
+          echo "Extracted version: $TAG_NAME"
+
+      - name: Install npm dependencies
+        run: npm ci
+
+      - name: Validate version synchronization
+        run: |
+          NPM_VERSION=$(node -p "require('./package.json').version")
+          NUGET_VERSION=$(grep -oP '<Version>\K[^<]+' Ivy.DesignSystem.csproj)
+          TAG_VERSION="${{ steps.extract_version.outputs.VERSION }}"
+
+          echo "npm version: $NPM_VERSION"
+          echo "NuGet version: $NUGET_VERSION"
+          echo "Git tag version: $TAG_VERSION"
+
+          if [ "$NPM_VERSION" != "$NUGET_VERSION" ]; then
+            echo "❌ Version mismatch between package.json and .csproj!"
+            exit 1
+          fi
+
+          if [ "$NPM_VERSION" != "$TAG_VERSION" ]; then
+            echo "❌ Version mismatch between package.json and git tag!"
+            exit 1
+          fi
+
+          echo "✓ All versions are synchronized: $NPM_VERSION"
+
+      - name: Build design system
+        run: npm run build
+
+      - name: Verify C# compilation
+        run: dotnet build Ivy.DesignSystem.csproj --configuration Release
+
+      - name: Format C# code
+        run: dotnet format Ivy.DesignSystem.csproj --verify-no-changes
+
+      - name: Create NuGet package
+        run: dotnet pack Ivy.DesignSystem.csproj --configuration Release --output ./nupkg
+
+      - name: Publish to npm
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Publish to NuGet.org
+        run: dotnet nuget push ./nupkg/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
+        env:
+          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          generate_release_notes: true
+          files: |
+            ./nupkg/*.nupkg
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish summary
+        run: |
+          echo "## 🎉 Published Successfully!" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Version: ${{ steps.extract_version.outputs.VERSION }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "✅ **npm**: [ivy-design-system](https://www.npmjs.com/package/ivy-design-system)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "✅ **NuGet**: [Ivy.DesignSystem](https://www.nuget.org/packages/Ivy.DesignSystem)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Installation" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo '```bash' >> $GITHUB_STEP_SUMMARY
+          echo "npm install ivy-design-system" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo '```bash' >> $GITHUB_STEP_SUMMARY
+          echo "dotnet add package Ivy.DesignSystem --version ${{ steps.extract_version.outputs.VERSION }}" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY

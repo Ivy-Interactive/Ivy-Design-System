@@ -148,16 +148,16 @@
     },
     "semantic": {
       "primary": {
-        "base": { "value": "#00cc92", "type": "color" },
-        "foreground": { "value": "#000000", "type": "color" },
-        "light": { "value": "#c2eeda", "type": "color" },
-        "dark": { "value": "#355a47", "type": "color" }
+        "base": { "value": "#FF0000", "type": "color" },
+        "foreground": { "value": "#ffffff", "type": "color" },
+        "light": { "value": "#ffcccc", "type": "color" },
+        "dark": { "value": "#660000", "type": "color" }
       },
       "secondary": {
-        "base": { "value": "#c2cbc7", "type": "color" },
+        "base": { "value": "#dfe7e3", "type": "color" },
         "foreground": { "value": "#000000", "type": "color" },
         "light": { "value": "#eaeeec", "type": "color" },
-        "dark": { "value": "#565b58", "type": "color" }
+        "dark": { "value": "#26262b", "type": "color" }
       },
       "destructive": {
         "base": { "value": "#dd5860", "type": "color" },
@@ -167,23 +167,64 @@
       },
       "success": {
         "base": { "value": "#86d26f", "type": "color" },
-        "foreground": { "value": "#000000", "type": "color" }
+        "foreground": { "value": "#000000", "type": "color" },
+        "light": { "value": "#d2efcd", "type": "color" },
+        "dark": { "value": "#405d3a", "type": "color" }
       },
       "warning": {
         "base": { "value": "#deb145", "type": "color" },
-        "foreground": { "value": "#000000", "type": "color" }
+        "foreground": { "value": "#000000", "type": "color" },
+        "light": { "value": "#f3e4ba", "type": "color" },
+        "dark": { "value": "#605129", "type": "color" }
       },
       "info": {
         "base": { "value": "#4469c0", "type": "color" },
-        "foreground": { "value": "#ffffff", "type": "color" }
+        "foreground": { "value": "#ffffff", "type": "color" },
+        "light": { "value": "#bacde9", "type": "color" },
+        "dark": { "value": "#293a55", "type": "color" }
       }
     },
+    "ui": {
+      "background": {
+        "base": { "value": "#ffffff", "type": "color" },
+        "foreground": { "value": "#000000", "type": "color" }
+      },
+      "border": { "value": "#d1d5db", "type": "color" },
+      "input": { "value": "#d1d5db", "type": "color" },
+      "ring": { "value": "#777777", "type": "color" },
+      "muted": {
+        "base": { "value": "#f8f8f8", "type": "color" },
+        "foreground": { "value": "#8f8f8f", "type": "color" }
+      },
+      "accent": {
+        "base": { "value": "#f8f8f8", "type": "color" },
+        "foreground": { "value": "#333333", "type": "color" }
+      },
+      "card": {
+        "base": { "value": "#ffffff", "type": "color" },
+        "foreground": { "value": "#262626", "type": "color" }
+      },
+      "popover": {
+        "base": { "value": "#ffffff", "type": "color" },
+        "foreground": { "value": "#000000", "type": "color" }
+      }
+    },
+    "sidebar": {
+      "base": { "value": "#f8f8f8", "type": "color" },
+      "foreground": { "value": "#000000", "type": "color" },
+      "primary": { "value": "#FF0000", "type": "color" },
+      "primary-foreground": { "value": "#ffffff", "type": "color" },
+      "accent": { "value": "#f4f6f6", "type": "color" },
+      "accent-foreground": { "value": "#333333", "type": "color" },
+      "border": { "value": "#d1d5db", "type": "color" },
+      "ring": { "value": "#777777", "type": "color" }
+    },
     "chart": {
-      "1": { "value": "#00cc92", "type": "color" },
-      "2": { "value": "#dd5860", "type": "color" },
-      "3": { "value": "#373bda", "type": "color" },
-      "4": { "value": "#deb145", "type": "color" },
-      "5": { "value": "#844cc0", "type": "color" },
+      "1": { "value": "#0077BE", "type": "color" },
+      "2": { "value": "#DC143C", "type": "color" },
+      "3": { "value": "#70AD47", "type": "color" },
+      "4": { "value": "#FFC000", "type": "color" },
+      "5": { "value": "#5B9BD5", "type": "color" },
       "6": { "value": "#f3a43b", "type": "color" },
       "7": { "value": "#91c7ae", "type": "color" },
       "8": { "value": "#d48265", "type": "color" },

@@ -1,6 +1,6 @@
 {
-  "name": "@ivy/design-system",
-  "version": "0.1.0",
+  "name": "ivy-design-system",
+  "version": "1.0.0",
   "description": "Modular multi-product token-based design system for Ivy products",
   "type": "module",
   "main": "dist/js/index.js",
@@ -18,7 +18,12 @@
     "./tailwind/core": "./dist/tailwind/core.js",
     "./tailwind/ivy-web": "./dist/tailwind/ivy-web.js",
     "./tailwind/ivy-framework": "./dist/tailwind/ivy-framework.js",
-    "./tokens": "./dist/tokens/index.json"
+    "./tokens": "./dist/tokens/index.json",
+    "./csharp/core": "./dist/csharp/CoreTokens.cs",
+    "./csharp/ivy-framework": "./dist/csharp/IvyFrameworkTokens.cs",
+    "./csharp/ivy-web": "./dist/csharp/IvyWebTokens.cs",
+    "./csharp/light": "./dist/csharp/LightThemeTokens.cs",
+    "./csharp/dark": "./dist/csharp/DarkThemeTokens.cs"
   },
   "files": [
     "dist",
@@ -29,6 +34,7 @@
     "build": "tsx scripts/build.ts",
     "dev": "tsx scripts/build.ts --watch",
     "clean": "rm -rf dist",
+    "sync-version": "tsx scripts/sync-version.ts",
     "prepublishOnly": "npm run clean && npm run build",
     "test": "echo \"No tests yet\" && exit 0"
   },

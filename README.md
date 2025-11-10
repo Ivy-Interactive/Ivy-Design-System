@@ -15,8 +15,16 @@ A centralized design token system that provides consistent styling across Ivy-We
 
 ## Installation
 
+### Frontend (npm)
+
 ```bash
 npm install ivy-design-system
+```
+
+### Backend (.NET)
+
+```bash
+dotnet add package Ivy.DesignSystem
 ```
 
 ## Quick Start
@@ -89,7 +97,44 @@ const tokenName: TokenName = 'color-brand-primary'; // ✅ Autocomplete works!
 const invalidToken: TokenName = 'not-a-token'; // ❌ TypeScript error
 ```
 
+### C# / ASP.NET
+
+Use design tokens in your .NET backend:
+
+```csharp
+using Ivy.Themes;
+
+// Access tokens via static properties
+var primaryColor = CoreTokens.Color.BrandPrimary;
+var spacing = CoreTokens.Spacing.Unit;
+
+// Generate CSS for embedding in pages
+string css = CoreTokens.GenerateCSS();
+
+// Get a specific token by name
+var token = CoreTokens.GetToken("color-brand-primary");
+
+// Get all tokens as a dictionary
+var allTokens = CoreTokens.GetAllTokens();
+```
+
+Product-specific tokens:
+
+```csharp
+// Ivy-Framework tokens
+var frameworkColor = IvyFrameworkTokens.Color.BrandPrimary;
+
+// Ivy-Web tokens
+var webColor = IvyWebTokens.Color.BrandPrimary;
+
+// Theme tokens
+var lightBg = LightThemeTokens.Color.Background;
+var darkBg = DarkThemeTokens.Color.Background;
+```
+
 ## Available Exports
+
+### Frontend (npm)
 
 | Export Path | Description |
 |-------------|-------------|
@@ -103,6 +148,16 @@ const invalidToken: TokenName = 'not-a-token'; // ❌ TypeScript error
 | `ivy-design-system/tailwind/ivy-web` | Ivy-Web Tailwind config |
 | `ivy-design-system/tailwind/ivy-framework` | Ivy-Framework Tailwind config |
 | `ivy-design-system/tokens` | Raw JSON tokens |
+
+### Backend (.NET)
+
+| Namespace | Description |
+|-----------|-------------|
+| `Ivy.Themes.CoreTokens` | Core design tokens (shared across products) |
+| `Ivy.Themes.IvyFrameworkTokens` | Ivy-Framework specific tokens |
+| `Ivy.Themes.IvyWebTokens` | Ivy-Web specific tokens |
+| `Ivy.Themes.LightThemeTokens` | Light theme tokens |
+| `Ivy.Themes.DarkThemeTokens` | Dark theme tokens |
 
 ## Token Categories
 
@@ -207,10 +262,28 @@ This project follows [Semantic Versioning](https://semver.org/):
 
 MIT © Ivy Interactive
 
+## Publishing
+
+This package is published to both npm and NuGet registries. See [PUBLISHING.md](./PUBLISHING.md) for details.
+
+**Automated Publishing:**
+- Push a version tag (e.g., `v1.0.0`) to trigger automatic publishing to both registries
+- GitHub Actions handles building, testing, and publishing
+
+**Manual Version Updates:**
+```bash
+npm run sync-version 1.0.1
+git add package.json Ivy.DesignSystem.csproj
+git commit -m "chore: bump version to 1.0.1"
+git tag v1.0.1
+git push && git push --tags
+```
+
 ## Links
 
 - [GitHub Repository](https://github.com/Ivy-Interactive/Ivy-Design-System)
 - [npm Package](https://www.npmjs.com/package/ivy-design-system)
+- [NuGet Package](https://www.nuget.org/packages/Ivy.DesignSystem)
 - [Issue Tracker](https://github.com/Ivy-Interactive/Ivy-Design-System/issues)
 
 ---

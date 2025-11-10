@@ -1,8 +1,36 @@
 import { generateCSS } from './generate-css.js';
 import { generateTailwind } from './generate-tailwind.js';
 import { generateTypes } from './generate-types.js';
+import { generateCSharp } from './generate-csharp.js';
 import { readdir, readFile, writeFile, mkdir } from 'fs/promises';
 import { join } from 'path';
+
+/**
+ * Validates that package.json and .csproj versions are synchronized
+ */
+async function validateVersions(): Promise<void> {
+  const packageJson = JSON.parse(await readFile('package.json', 'utf-8'));
+  const csprojContent = await readFile('Ivy.DesignSystem.csproj', 'utf-8');
+  const versionMatch = csprojContent.match(/<Version>([\d.]+)<\/Version>/);
+
+  const npmVersion = packageJson.version;
+  const nugetVersion = versionMatch ? versionMatch[1] : null;
+
+  if (!nugetVersion) {
+    console.warn('⚠️  Warning: Could not find version in Ivy.DesignSystem.csproj');
+    return;
+  }
+
+  if (npmVersion !== nugetVersion) {
+    console.error('❌ Version mismatch detected!');
+    console.error(`   npm:   ${npmVersion}`);
+    console.error(`   NuGet: ${nugetVersion}`);
+    console.error('\nRun: tsx scripts/sync-version.ts <version>');
+    process.exit(1);
+  }
+
+  console.log(`📌 Version: ${npmVersion} (synchronized)\n`);
+}
 
 /**
  * Recursively loads all JSON token files from a directory
@@ -56,6 +84,9 @@ async function build() {
   console.log('🏗️  Building Ivy Design System...\n');
 
   try {
+    // Validate version synchronization
+    await validateVersions();
+
     // Load tokens from each directory
     console.log('📖 Loading tokens...');
     const coreTokens = await loadTokens('tokens/core');
@@ -79,6 +110,7 @@ async function build() {
     await mkdir('dist/tailwind', { recursive: true });
     await mkdir('dist/js', { recursive: true });
     await mkdir('dist/tokens', { recursive: true });
+    await mkdir('dist/csharp', { recursive: true });
     console.log('  ✓ Directories created\n');
 
     // Generate CSS
@@ -113,6 +145,15 @@ async function build() {
     await generateTypes(allTokens);
     console.log('');
 
+    // Generate C# classes
+    console.log('🔷 Generating C# classes...');
+    await generateCSharp(coreTokens, 'dist/csharp/CoreTokens.cs', 'CoreTokens');
+    await generateCSharp(ivyFrameworkMerged, 'dist/csharp/IvyFrameworkTokens.cs', 'IvyFrameworkTokens');
+    await generateCSharp(ivyWebMerged, 'dist/csharp/IvyWebTokens.cs', 'IvyWebTokens');
+    await generateCSharp(lightTheme, 'dist/csharp/LightThemeTokens.cs', 'LightThemeTokens');
+    await generateCSharp(darkTheme, 'dist/csharp/DarkThemeTokens.cs', 'DarkThemeTokens');
+    console.log('');
+
     // Copy raw tokens
     console.log('📦 Copying raw tokens...');
     const rawTokens = {
@@ -133,6 +174,7 @@ async function build() {
     console.log('  • CSS: dist/css/');
     console.log('  • Tailwind: dist/tailwind/');
     console.log('  • JS/TS: dist/js/');
+    console.log('  • C#: dist/csharp/');
     console.log('  • Raw tokens: dist/tokens/');
 
   } catch (error) {

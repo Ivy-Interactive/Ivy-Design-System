@@ -5,3 +5,10 @@ dist/
 .env
 .env.local
 *.tgz
+
+# NuGet
+*.nupkg
+*.snupkg
+nupkg/
+bin/
+obj/
