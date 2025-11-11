@@ -148,10 +148,10 @@
     },
     "semantic": {
       "primary": {
-        "base": { "value": "#FF0000", "type": "color" },
-        "foreground": { "value": "#ffffff", "type": "color" },
-        "light": { "value": "#ffcccc", "type": "color" },
-        "dark": { "value": "#660000", "type": "color" }
+        "base": { "value": "#00cc92", "type": "color" },
+        "foreground": { "value": "#000000", "type": "color" },
+        "light": { "value": "#c2eeda", "type": "color" },
+        "dark": { "value": "#355a47", "type": "color" }
       },
       "secondary": {
         "base": { "value": "#dfe7e3", "type": "color" },
@@ -212,7 +212,7 @@
     "sidebar": {
       "base": { "value": "#f8f8f8", "type": "color" },
       "foreground": { "value": "#000000", "type": "color" },
-      "primary": { "value": "#FF0000", "type": "color" },
+      "primary": { "value": "#00cc92", "type": "color" },
       "primary-foreground": { "value": "#ffffff", "type": "color" },
       "accent": { "value": "#f4f6f6", "type": "color" },
       "accent-foreground": { "value": "#333333", "type": "color" },
