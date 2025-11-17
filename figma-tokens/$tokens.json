@@ -1,0 +1,316 @@
+{
+  "ivy-framework": {
+    "color": {
+      "primary": {
+        "value": "#00cc92",
+        "type": "color"
+      },
+      "primary-foreground": {
+        "value": "#000000",
+        "type": "color"
+      },
+      "secondary": {
+        "value": "#dfe7e3",
+        "type": "color"
+      },
+      "secondary-foreground": {
+        "value": "#000000",
+        "type": "color"
+      },
+      "destructive": {
+        "value": "#dd5860",
+        "type": "color"
+      },
+      "destructive-foreground": {
+        "value": "#000000",
+        "type": "color"
+      },
+      "success": {
+        "value": "#86d26f",
+        "type": "color"
+      },
+      "success-foreground": {
+        "value": "#000000",
+        "type": "color"
+      },
+      "warning": {
+        "value": "#deb145",
+        "type": "color"
+      },
+      "warning-foreground": {
+        "value": "#000000",
+        "type": "color"
+      },
+      "info": {
+        "value": "#4469c0",
+        "type": "color"
+      },
+      "info-foreground": {
+        "value": "#ffffff",
+        "type": "color"
+      },
+      "background": {
+        "value": "#ffffff",
+        "type": "color"
+      },
+      "foreground": {
+        "value": "#000000",
+        "type": "color"
+      },
+      "border": {
+        "value": "#d1d5db",
+        "type": "color"
+      },
+      "input": {
+        "value": "#d1d5db",
+        "type": "color"
+      },
+      "ring": {
+        "value": "#777777",
+        "type": "color"
+      },
+      "muted": {
+        "value": "#f8f8f8",
+        "type": "color"
+      },
+      "muted-foreground": {
+        "value": "#8f8f8f",
+        "type": "color"
+      },
+      "accent": {
+        "value": "#f8f8f8",
+        "type": "color"
+      },
+      "accent-foreground": {
+        "value": "#333333",
+        "type": "color"
+      },
+      "card": {
+        "value": "#ffffff",
+        "type": "color"
+      },
+      "card-foreground": {
+        "value": "#262626",
+        "type": "color"
+      },
+      "popover": {
+        "value": "#ffffff",
+        "type": "color"
+      },
+      "popover-foreground": {
+        "value": "#000000",
+        "type": "color"
+      }
+    }
+  },
+  "theme": {
+    "light": {
+      "color": {
+        "primary": {
+          "value": "#00cc92",
+          "type": "color"
+        },
+        "primary-foreground": {
+          "value": "#000000",
+          "type": "color"
+        },
+        "secondary": {
+          "value": "#dfe7e3",
+          "type": "color"
+        },
+        "secondary-foreground": {
+          "value": "#000000",
+          "type": "color"
+        },
+        "destructive": {
+          "value": "#dd5860",
+          "type": "color"
+        },
+        "destructive-foreground": {
+          "value": "#000000",
+          "type": "color"
+        },
+        "success": {
+          "value": "#86d26f",
+          "type": "color"
+        },
+        "success-foreground": {
+          "value": "#000000",
+          "type": "color"
+        },
+        "warning": {
+          "value": "#deb145",
+          "type": "color"
+        },
+        "warning-foreground": {
+          "value": "#000000",
+          "type": "color"
+        },
+        "info": {
+          "value": "#4469c0",
+          "type": "color"
+        },
+        "info-foreground": {
+          "value": "#ffffff",
+          "type": "color"
+        },
+        "background": {
+          "value": "#ffffff",
+          "type": "color"
+        },
+        "foreground": {
+          "value": "#000000",
+          "type": "color"
+        },
+        "border": {
+          "value": "#d1d5db",
+          "type": "color"
+        },
+        "input": {
+          "value": "#d1d5db",
+          "type": "color"
+        },
+        "ring": {
+          "value": "#777777",
+          "type": "color"
+        },
+        "muted": {
+          "value": "#f8f8f8",
+          "type": "color"
+        },
+        "muted-foreground": {
+          "value": "#8f8f8f",
+          "type": "color"
+        },
+        "accent": {
+          "value": "#f8f8f8",
+          "type": "color"
+        },
+        "accent-foreground": {
+          "value": "#333333",
+          "type": "color"
+        },
+        "card": {
+          "value": "#ffffff",
+          "type": "color"
+        },
+        "card-foreground": {
+          "value": "#262626",
+          "type": "color"
+        },
+        "popover": {
+          "value": "#ffffff",
+          "type": "color"
+        },
+        "popover-foreground": {
+          "value": "#000000",
+          "type": "color"
+        }
+      }
+    },
+    "dark": {
+      "color": {
+        "primary": {
+          "value": "#00cc92",
+          "type": "color"
+        },
+        "primary-foreground": {
+          "value": "#000000",
+          "type": "color"
+        },
+        "secondary": {
+          "value": "#26262b",
+          "type": "color"
+        },
+        "secondary-foreground": {
+          "value": "#f8f8f8",
+          "type": "color"
+        },
+        "destructive": {
+          "value": "#dd5860",
+          "type": "color"
+        },
+        "destructive-foreground": {
+          "value": "#f8f8f8",
+          "type": "color"
+        },
+        "success": {
+          "value": "#86d26f",
+          "type": "color"
+        },
+        "success-foreground": {
+          "value": "#000000",
+          "type": "color"
+        },
+        "warning": {
+          "value": "#deb145",
+          "type": "color"
+        },
+        "warning-foreground": {
+          "value": "#000000",
+          "type": "color"
+        },
+        "info": {
+          "value": "#4469c0",
+          "type": "color"
+        },
+        "info-foreground": {
+          "value": "#ffffff",
+          "type": "color"
+        },
+        "background": {
+          "value": "#000000",
+          "type": "color"
+        },
+        "foreground": {
+          "value": "#f8f8f8",
+          "type": "color"
+        },
+        "border": {
+          "value": "#262626",
+          "type": "color"
+        },
+        "input": {
+          "value": "#262626",
+          "type": "color"
+        },
+        "ring": {
+          "value": "#777777",
+          "type": "color"
+        },
+        "muted": {
+          "value": "#1a1a1a",
+          "type": "color"
+        },
+        "muted-foreground": {
+          "value": "#8f8f8f",
+          "type": "color"
+        },
+        "accent": {
+          "value": "#1a1a1a",
+          "type": "color"
+        },
+        "accent-foreground": {
+          "value": "#f8f8f8",
+          "type": "color"
+        },
+        "card": {
+          "value": "#171717",
+          "type": "color"
+        },
+        "card-foreground": {
+          "value": "#f8f8f8",
+          "type": "color"
+        },
+        "popover": {
+          "value": "#000000",
+          "type": "color"
+        },
+        "popover-foreground": {
+          "value": "#f8f8f8",
+          "type": "color"
+        }
+      }
+    }
+  }
+}

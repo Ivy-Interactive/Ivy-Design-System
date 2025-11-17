@@ -1,9 +1,0 @@
-{
-  "spacing": {
-    "unit": {
-      "value": "0.27rem",
-      "type": "dimension",
-      "description": "Base spacing unit used across the design system"
-    }
-  }
-}

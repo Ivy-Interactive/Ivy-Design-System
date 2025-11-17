@@ -1,4 +1,4 @@
-import { writeFile } from 'fs/promises';
+import { writeFile } from "fs/promises";
 
 /**
  * Converts a kebab-case token name to PascalCase C# property name
@@ -8,28 +8,49 @@ import { writeFile } from 'fs/promises';
  */
 function toPascalCase(str: string): string {
   return str
-    .split('-')
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-    .join('');
+    .split("-")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join("");
 }
 
 /**
  * Extracts all tokens with their names and values from nested structure
+ * Handles both direct color structure and theme structure (theme.dark.color, theme.light.color)
  */
-function extractTokens(obj: any, prefix = ''): Array<{ name: string; value: string; propertyName: string }> {
-  const tokens: Array<{ name: string; value: string; propertyName: string }> = [];
+function extractTokens(
+  obj: any,
+  prefix = ""
+): Array<{ name: string; value: string; propertyName: string }> {
+  const tokens: Array<{ name: string; value: string; propertyName: string }> =
+    [];
 
+  // Handle theme structure (theme.dark.color or theme.light.color)
+  if (obj.theme) {
+    const themeKey = Object.keys(obj.theme)[0]; // 'dark' or 'light'
+    if (obj.theme[themeKey]?.color) {
+      return extractTokens(obj.theme[themeKey].color, prefix);
+    }
+  }
+
+  // Handle direct color structure
+  if (obj.color) {
+    return extractTokens(obj.color, prefix);
+  }
+
+  // Extract tokens from current level
   for (const [key, value] of Object.entries(obj)) {
-    if (typeof value === 'object' && value !== null) {
-      if ('value' in value && 'type' in value) {
+    if (typeof value === "object" && value !== null) {
+      if ("value" in value && "type" in value) {
         const varName = prefix ? `${prefix}-${key}` : key;
-        const propertyName = toPascalCase(varName);
+        // For simplified naming, just use the key directly (e.g., 'primary' -> 'Primary')
+        const propertyName = toPascalCase(key);
         tokens.push({
           name: varName,
           value: value.value as string,
-          propertyName
+          propertyName,
         });
-      } else {
+      } else if (key !== "theme") {
+        // Skip theme key, process other nested objects
         const newPrefix = prefix ? `${prefix}-${key}` : key;
         tokens.push(...extractTokens(value, newPrefix));
       }
@@ -40,24 +61,13 @@ function extractTokens(obj: any, prefix = ''): Array<{ name: string; value: stri
 }
 
 /**
- * Groups tokens by category (first part of token name)
- * Examples:
- *   color-brand-primary -> color
- *   typography-fontSize-12 -> typography
- *   spacing-unit -> spacing
+ * Groups tokens by category - for simplified structure, all tokens are under 'color'
  */
-function groupTokensByCategory(tokens: Array<{ name: string; value: string; propertyName: string }>) {
-  const groups: Record<string, Array<{ name: string; value: string; propertyName: string }>> = {};
-
-  for (const token of tokens) {
-    const category = token.name.split('-')[0];
-    if (!groups[category]) {
-      groups[category] = [];
-    }
-    groups[category].push(token);
-  }
-
-  return groups;
+function groupTokensByCategory(
+  tokens: Array<{ name: string; value: string; propertyName: string }>
+) {
+  // All tokens are color tokens in the simplified structure
+  return { color: tokens };
 }
 
 /**
@@ -70,14 +80,14 @@ function groupTokensByCategory(tokens: Array<{ name: string; value: string; prop
 export async function generateCSharp(
   tokens: any,
   outputPath: string,
-  className = 'DesignSystemTokens',
-  namespace = 'Ivy.Themes'
+  className = "DesignSystemTokens",
+  namespace = "Ivy.Themes"
 ) {
   const extractedTokens = extractTokens(tokens);
   const groupedTokens = groupTokensByCategory(extractedTokens);
 
   // Generate nested classes for each category
-  let nestedClasses = '';
+  let nestedClasses = "";
   const categoryNames: string[] = [];
 
   for (const [category, categoryTokens] of Object.entries(groupedTokens)) {
@@ -85,13 +95,15 @@ export async function generateCSharp(
     categoryNames.push(categoryClassName);
 
     const properties = categoryTokens
-      .map(token => {
+      .map((token) => {
         // Escape quotes in values
         const escapedValue = token.value.replace(/"/g, '\\"');
-        return `            /// <summary>${token.name}</summary>\n` +
-               `            public static readonly string ${token.propertyName} = "${escapedValue}";`;
+        return (
+          `            /// <summary>${token.name}</summary>\n` +
+          `            public static readonly string ${token.propertyName} = "${escapedValue}";`
+        );
       })
-      .join('\n\n');
+      .join("\n\n");
 
     nestedClasses += `
         /// <summary>
@@ -139,8 +151,10 @@ ${nestedClasses}
         {
             var css = new System.Text.StringBuilder();
             css.AppendLine($"{selector} {{");
-${categoryNames.map(cat =>
-`
+${categoryNames
+  .map(
+    (cat) =>
+      `
             // ${cat} tokens
             foreach (var field in typeof(${cat}).GetFields(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static))
             {
@@ -150,7 +164,9 @@ ${categoryNames.map(cat =>
                     var value = field.GetValue(null);
                     css.AppendLine($"  --{name}: {value};");
                 }
-            }`).join('')}
+            }`
+  )
+  .join("")}
 
             css.AppendLine("}");
             return css.ToString();
@@ -184,7 +200,7 @@ ${categoryNames.map(cat =>
         {
             return new string[]
             {
-${extractedTokens.map(t => `                "${t.name}"`).join(',\n')}
+${extractedTokens.map((t) => `                "${t.name}"`).join(",\n")}
             };
         }
 
@@ -195,8 +211,10 @@ ${extractedTokens.map(t => `                "${t.name}"`).join(',\n')}
         public static System.Collections.Generic.Dictionary<string, string> GetAllTokens()
         {
             var tokens = new System.Collections.Generic.Dictionary<string, string>();
-${categoryNames.map(cat =>
-`
+${categoryNames
+  .map(
+    (cat) =>
+      `
             // ${cat} tokens
             foreach (var field in typeof(${cat}).GetFields(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static))
             {
@@ -206,7 +224,9 @@ ${categoryNames.map(cat =>
                     var value = field.GetValue(null) as string;
                     if (value != null) tokens[name] = value;
                 }
-            }`).join('')}
+            }`
+  )
+  .join("")}
 
             return tokens;
         }
@@ -217,5 +237,5 @@ ${categoryNames.map(cat =>
   await writeFile(outputPath, csharp);
   console.log(`  ✓ ${outputPath}`);
   console.log(`  → Generated ${extractedTokens.length} C# token properties`);
-  console.log(`  → Categories: ${categoryNames.join(', ')}`);
+  console.log(`  → Categories: ${categoryNames.join(", ")}`);
 }

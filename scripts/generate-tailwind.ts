@@ -1,16 +1,16 @@
-import { writeFile } from 'fs/promises';
+import { writeFile } from "fs/promises";
 
 /**
  * Converts token objects to Tailwind theme configuration
  * Maps tokens to CSS variable references
  */
-function tokenToTailwind(obj: any, prefix = ''): any {
+function tokenToTailwind(obj: any, prefix = ""): any {
   const result: any = {};
 
   for (const [key, value] of Object.entries(obj)) {
-    if (typeof value === 'object' && value !== null) {
+    if (typeof value === "object" && value !== null) {
       // Check if this is a token with a value property
-      if ('value' in value && 'type' in value) {
+      if ("value" in value && "type" in value) {
         const varName = prefix ? `${prefix}-${key}` : key;
         result[key] = `var(--${varName})`;
       } else {
@@ -26,63 +26,14 @@ function tokenToTailwind(obj: any, prefix = ''): any {
 
 /**
  * Maps token categories to Tailwind theme keys
+ * Only handles colors in the simplified structure
  */
 function mapTokensToTailwindTheme(tokens: any): any {
   const theme: any = {};
 
-  // Map colors
+  // Map colors - handle both direct color structure and nested structure
   if (tokens.color) {
-    theme.colors = tokenToTailwind(tokens.color, 'color');
-  }
-
-  // Map typography
-  if (tokens.typography) {
-    if (tokens.typography.fontFamily) {
-      theme.fontFamily = tokenToTailwind(tokens.typography.fontFamily, 'typography-fontFamily');
-    }
-    if (tokens.typography.fontSize) {
-      theme.fontSize = tokenToTailwind(tokens.typography.fontSize, 'typography-fontSize');
-    }
-    if (tokens.typography.lineHeight) {
-      theme.lineHeight = tokenToTailwind(tokens.typography.lineHeight, 'typography-lineHeight');
-    }
-    if (tokens.typography.letterSpacing) {
-      theme.letterSpacing = tokenToTailwind(tokens.typography.letterSpacing, 'typography-letterSpacing');
-    }
-    if (tokens.typography.tracking) {
-      if (!theme.letterSpacing) theme.letterSpacing = {};
-      Object.assign(theme.letterSpacing, tokenToTailwind(tokens.typography.tracking, 'typography-tracking'));
-    }
-  }
-
-  // Map spacing
-  if (tokens.spacing) {
-    theme.spacing = tokenToTailwind(tokens.spacing, 'spacing');
-  }
-
-  // Map borders
-  if (tokens.radius) {
-    theme.borderRadius = tokenToTailwind(tokens.radius, 'radius');
-  }
-
-  // Map shadows
-  if (tokens.shadow) {
-    theme.boxShadow = tokenToTailwind(tokens.shadow, 'shadow');
-  }
-
-  // Map breakpoints
-  if (tokens.breakpoint) {
-    theme.screens = tokenToTailwind(tokens.breakpoint, 'breakpoint');
-  }
-
-  // Map animations
-  if (tokens.animation) {
-    if (tokens.animation.duration) {
-      theme.transitionDuration = tokenToTailwind(tokens.animation.duration, 'animation-duration');
-    }
-    if (tokens.animation.easing) {
-      theme.transitionTimingFunction = tokenToTailwind(tokens.animation.easing, 'animation-easing');
-    }
+    theme.colors = tokenToTailwind(tokens.color, "color");
   }
 
   return theme;
@@ -98,8 +49,8 @@ export async function generateTailwind(tokens: any, outputPath: string) {
 
   const config = {
     theme: {
-      extend: theme
-    }
+      extend: theme,
+    },
   };
 
   const content = `export default ${JSON.stringify(config, null, 2)};\n`;
