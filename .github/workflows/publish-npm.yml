@@ -1,0 +1,154 @@
+name: Publish to npm
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version to publish (e.g., 1.2.0)"
+        required: true
+        type: string
+
+jobs:
+  publish-npm:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+      packages: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Extract version
+        id: extract_version
+        run: |
+          VERSION="${{ github.event.inputs.version }}"
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+          echo "Using version: $VERSION"
+
+      - name: Install npm dependencies
+        run: npm ci
+
+      - name: Sync npm version
+        run: |
+          EXPECTED_VERSION="${{ steps.extract_version.outputs.VERSION }}"
+          echo "Syncing package.json version to $EXPECTED_VERSION..."
+          npm version $EXPECTED_VERSION --no-git-tag-version
+
+      - name: Check if npm version already exists
+        id: check_npm_version
+        run: |
+          EXPECTED_VERSION="${{ steps.extract_version.outputs.VERSION }}"
+          if npm view ivy-design-system@$EXPECTED_VERSION version >/dev/null 2>&1; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+            echo "⚠️  Version $EXPECTED_VERSION already exists on npm"
+            NEXT_PATCH=$(echo $EXPECTED_VERSION | awk -F. '{print $1"."$2"."$3+1}')
+            echo "💡 Use a different version number (e.g., patch: $EXPECTED_VERSION -> $NEXT_PATCH)"
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+            echo "✓ Version $EXPECTED_VERSION is available"
+          fi
+
+      - name: Commit npm version changes
+        if: steps.check_npm_version.outputs.exists != 'true'
+        run: |
+          EXPECTED_VERSION="${{ steps.extract_version.outputs.VERSION }}"
+          BRANCH="${{ github.ref_name }}"
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add package.json
+          if git diff --staged --quiet; then
+            echo "No version changes to commit"
+          else
+            git commit -m "chore(npm): bump version to $EXPECTED_VERSION"
+            git push origin $BRANCH
+            echo "✓ npm version changes committed and pushed to $BRANCH"
+          fi
+
+      - name: Create and push npm tag
+        if: steps.check_npm_version.outputs.exists != 'true'
+        run: |
+          EXPECTED_VERSION="${{ steps.extract_version.outputs.VERSION }}"
+          TAG="npm-v$EXPECTED_VERSION"
+          # Check if tag already exists
+          if git rev-parse "$TAG" >/dev/null 2>&1; then
+            echo "Tag $TAG already exists, skipping tag creation"
+          else
+            git tag -a "$TAG" -m "npm release $EXPECTED_VERSION"
+            git push origin "$TAG"
+            echo "✓ Tag $TAG created and pushed"
+          fi
+
+      - name: Validate npm version
+        if: steps.check_npm_version.outputs.exists != 'true'
+        run: |
+          NPM_VERSION=$(node -p "require('./package.json').version")
+          EXPECTED_VERSION="${{ steps.extract_version.outputs.VERSION }}"
+
+          echo "npm version: $NPM_VERSION"
+          echo "Expected version: $EXPECTED_VERSION"
+
+          if [ "$NPM_VERSION" != "$EXPECTED_VERSION" ]; then
+            echo "❌ Version sync failed! Expected $EXPECTED_VERSION but got $NPM_VERSION"
+            exit 1
+          fi
+
+          echo "✓ npm version is synchronized: $NPM_VERSION"
+
+      - name: Build design system
+        if: steps.check_npm_version.outputs.exists != 'true'
+        run: npm run build
+
+      - name: Publish to npm
+        if: steps.check_npm_version.outputs.exists != 'true'
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Fail if version exists
+        if: steps.check_npm_version.outputs.exists == 'true'
+        run: |
+          echo "❌ Cannot publish: Version ${{ steps.extract_version.outputs.VERSION }} already exists on npm"
+          echo "💡 Please use a different version number"
+          exit 1
+
+      - name: Create GitHub Release
+        if: steps.check_npm_version.outputs.exists != 'true'
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: npm-v${{ steps.extract_version.outputs.VERSION }}
+          name: npm Release v${{ steps.extract_version.outputs.VERSION }}
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish summary
+        if: always()
+        run: |
+          if [ "${{ steps.check_npm_version.outputs.exists }}" == "true" ]; then
+            echo "## ❌ Publish Failed" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "Version ${{ steps.extract_version.outputs.VERSION }} already exists on npm" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "## 🎉 npm Published Successfully!" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "### Version: ${{ steps.extract_version.outputs.VERSION }}" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "✅ **npm**: [ivy-design-system@${{ steps.extract_version.outputs.VERSION }}](https://www.npmjs.com/package/ivy-design-system)" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "### Installation" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo '```bash' >> $GITHUB_STEP_SUMMARY
+            echo "npm install ivy-design-system@${{ steps.extract_version.outputs.VERSION }}" >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+          fi
+

@@ -1,4 +1,4 @@
-name: Publish Packages
+name: Publish to NuGet
 
 on:
   workflow_dispatch:
@@ -9,7 +9,7 @@ on:
         type: string
 
 jobs:
-  publish:
+  publish-nuget:
     runs-on: ubuntu-latest
 
     permissions:
@@ -26,7 +26,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20"
-          registry-url: "https://registry.npmjs.org"
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
@@ -43,61 +42,56 @@ jobs:
       - name: Install npm dependencies
         run: npm ci
 
-      - name: Sync version
+      - name: Sync NuGet version
         run: |
           EXPECTED_VERSION="${{ steps.extract_version.outputs.VERSION }}"
-          echo "Syncing versions to $EXPECTED_VERSION..."
-          npm run sync-version $EXPECTED_VERSION
+          echo "Syncing Ivy.DesignSystem.csproj version to $EXPECTED_VERSION..."
+          # Update .csproj version
+          sed -i "s/<Version>.*<\/Version>/<Version>$EXPECTED_VERSION<\/Version>/" Ivy.DesignSystem.csproj
+          echo "✓ Updated Ivy.DesignSystem.csproj to version $EXPECTED_VERSION"
 
-      - name: Commit version changes
+      - name: Commit NuGet version changes
         run: |
           EXPECTED_VERSION="${{ steps.extract_version.outputs.VERSION }}"
           BRANCH="${{ github.ref_name }}"
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add package.json Ivy.DesignSystem.csproj
+          git add Ivy.DesignSystem.csproj
           if git diff --staged --quiet; then
             echo "No version changes to commit"
           else
-            git commit -m "chore: bump version to $EXPECTED_VERSION"
+            git commit -m "chore(nuget): bump version to $EXPECTED_VERSION"
             git push origin $BRANCH
-            echo "✓ Version changes committed and pushed to $BRANCH"
+            echo "✓ NuGet version changes committed and pushed to $BRANCH"
           fi
 
-      - name: Create and push tag
+      - name: Create and push NuGet tag
         run: |
           EXPECTED_VERSION="${{ steps.extract_version.outputs.VERSION }}"
-          TAG="v$EXPECTED_VERSION"
+          TAG="nuget-v$EXPECTED_VERSION"
           # Check if tag already exists
           if git rev-parse "$TAG" >/dev/null 2>&1; then
             echo "Tag $TAG already exists, skipping tag creation"
           else
-            git tag -a "$TAG" -m "Release $EXPECTED_VERSION"
+            git tag -a "$TAG" -m "NuGet release $EXPECTED_VERSION"
             git push origin "$TAG"
             echo "✓ Tag $TAG created and pushed"
           fi
 
-      - name: Validate version synchronization
+      - name: Validate NuGet version
         run: |
-          NPM_VERSION=$(node -p "require('./package.json').version")
           NUGET_VERSION=$(grep -oP '<Version>\K[^<]+' Ivy.DesignSystem.csproj)
           EXPECTED_VERSION="${{ steps.extract_version.outputs.VERSION }}"
 
-          echo "npm version: $NPM_VERSION"
           echo "NuGet version: $NUGET_VERSION"
           echo "Expected version: $EXPECTED_VERSION"
 
-          if [ "$NPM_VERSION" != "$NUGET_VERSION" ]; then
-            echo "❌ Version mismatch between package.json and .csproj!"
+          if [ "$NUGET_VERSION" != "$EXPECTED_VERSION" ]; then
+            echo "❌ Version sync failed! Expected $EXPECTED_VERSION but got $NUGET_VERSION"
             exit 1
           fi
 
-          if [ "$NPM_VERSION" != "$EXPECTED_VERSION" ]; then
-            echo "❌ Version sync failed! Expected $EXPECTED_VERSION but got $NPM_VERSION"
-            exit 1
-          fi
-
-          echo "✓ All versions are synchronized: $NPM_VERSION"
+          echo "✓ NuGet version is synchronized: $NUGET_VERSION"
 
       - name: Build design system
         run: npm run build
@@ -114,32 +108,6 @@ jobs:
       - name: Create NuGet package
         run: dotnet pack Ivy.DesignSystem.csproj --configuration Release --output ./nupkg
 
-      - name: Check if npm version already exists
-        id: check_npm_version
-        run: |
-          EXPECTED_VERSION="${{ steps.extract_version.outputs.VERSION }}"
-          if npm view ivy-design-system@$EXPECTED_VERSION version >/dev/null 2>&1; then
-            echo "exists=true" >> $GITHUB_OUTPUT
-            echo "⚠️  Version $EXPECTED_VERSION already exists on npm"
-            echo "💡 Use a different version number (e.g., patch: $EXPECTED_VERSION -> $(echo $EXPECTED_VERSION | awk -F. '{print $1"."$2"."$3+1}'))"
-          else
-            echo "exists=false" >> $GITHUB_OUTPUT
-            echo "✓ Version $EXPECTED_VERSION is available"
-          fi
-
-      - name: Publish to npm
-        if: steps.check_npm_version.outputs.exists != 'true'
-        run: npm publish --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      - name: Fail if version exists
-        if: steps.check_npm_version.outputs.exists == 'true'
-        run: |
-          echo "❌ Cannot publish: Version ${{ steps.extract_version.outputs.VERSION }} already exists on npm"
-          echo "💡 Please use a different version number"
-          exit 1
-
       - name: Publish to NuGet.org
         run: dotnet nuget push ./nupkg/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
         env:
@@ -148,8 +116,8 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: v${{ steps.extract_version.outputs.VERSION }}
-          name: Release v${{ steps.extract_version.outputs.VERSION }}
+          tag_name: nuget-v${{ steps.extract_version.outputs.VERSION }}
+          name: NuGet Release v${{ steps.extract_version.outputs.VERSION }}
           generate_release_notes: true
           files: |
             ./nupkg/*.nupkg
@@ -158,20 +126,15 @@ jobs:
 
       - name: Publish summary
         run: |
-          echo "## 🎉 Published Successfully!" >> $GITHUB_STEP_SUMMARY
+          echo "## 🎉 NuGet Published Successfully!" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### Version: ${{ steps.extract_version.outputs.VERSION }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "✅ **npm**: [ivy-design-system](https://www.npmjs.com/package/ivy-design-system)" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "✅ **NuGet**: [Ivy.DesignSystem](https://www.nuget.org/packages/Ivy.DesignSystem)" >> $GITHUB_STEP_SUMMARY
+          echo "✅ **NuGet**: [Ivy.DesignSystem@${{ steps.extract_version.outputs.VERSION }}](https://www.nuget.org/packages/Ivy.DesignSystem)" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### Installation" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo '```bash' >> $GITHUB_STEP_SUMMARY
-          echo "npm install ivy-design-system" >> $GITHUB_STEP_SUMMARY
-          echo '```' >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo '```bash' >> $GITHUB_STEP_SUMMARY
           echo "dotnet add package Ivy.DesignSystem --version ${{ steps.extract_version.outputs.VERSION }}" >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
+
