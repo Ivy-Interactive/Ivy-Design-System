@@ -15,11 +15,13 @@ dotnet add package Ivy.DesignSystem
 ```
 
 Or via Package Manager Console:
+
 ```powershell
 Install-Package Ivy.DesignSystem
 ```
 
 Or add to `.csproj`:
+
 ```xml
 <PackageReference Include="Ivy.DesignSystem" Version="1.1.3" />
 ```
@@ -31,12 +33,15 @@ The NuGet package includes:
 ### 1. Three Static Token Classes
 
 #### `IvyFrameworkTokens`
+
 Source design tokens (base color values, no duplicates)
 
 #### `LightThemeTokens`
+
 Light theme tokens that reference source colors
 
 #### `DarkThemeTokens`
+
 Dark theme tokens that reference source colors
 
 ### 2. Token Structure
@@ -63,6 +68,7 @@ namespace Ivy.Themes
 ## Available Tokens
 
 ### Semantic Colors
+
 - `Primary` / `PrimaryForeground`
 - `Secondary` / `SecondaryForeground`
 - `Destructive` / `DestructiveForeground`
@@ -71,6 +77,7 @@ namespace Ivy.Themes
 - `Info` / `InfoForeground`
 
 ### UI Colors
+
 - `Background`
 - `Foreground`
 - `Border`
@@ -152,7 +159,7 @@ Dictionary<string, string> allTokens = LightThemeTokens.GetAllTokens();
         background-color: @LightThemeTokens.Color.Primary;
         color: @LightThemeTokens.Color.PrimaryForeground;
     }
-    
+
     .my-card {
         background-color: @LightThemeTokens.Color.Card;
         border-color: @LightThemeTokens.Color.Border;
@@ -189,10 +196,10 @@ public class ThemeService
         else
             return LightThemeTokens.GetToken(tokenName) ?? "#ffffff";
     }
-    
+
     public string GenerateThemeCSS(bool isDark = false)
     {
-        return isDark 
+        return isDark
             ? DarkThemeTokens.GenerateCSS(":root")
             : LightThemeTokens.GenerateCSS(":root");
     }
@@ -204,36 +211,44 @@ public class ThemeService
 Each token class provides these utility methods:
 
 ### `GenerateCSS(string selector = ":root")`
+
 Generates CSS custom properties string for all tokens.
 
 **Example:**
+
 ```csharp
 string css = LightThemeTokens.GenerateCSS();
 // Returns: ":root { --primary: #00cc92; --background: #ffffff; ... }"
 ```
 
 ### `GetToken(string tokenName)`
+
 Gets a token value by its CSS variable name (kebab-case).
 
 **Example:**
+
 ```csharp
 string? value = LightThemeTokens.GetToken("primary-foreground");
 // Returns: "#000000"
 ```
 
 ### `GetAllTokenNames()`
+
 Returns an array of all token names in kebab-case.
 
 **Example:**
+
 ```csharp
 string[] names = LightThemeTokens.GetAllTokenNames();
 // Returns: ["primary", "primary-foreground", "secondary", ...]
 ```
 
 ### `GetAllTokens()`
+
 Returns a dictionary mapping token names to values.
 
 **Example:**
+
 ```csharp
 Dictionary<string, string> tokens = LightThemeTokens.GetAllTokens();
 // Returns: { "primary": "#00cc92", "background": "#ffffff", ... }
@@ -251,19 +266,22 @@ The NuGet package contains:
 ## Token Reference Format
 
 Theme tokens reference source tokens using the format:
+
 ```
 {source.color.token-name}
 ```
 
 For example:
+
 - `LightThemeTokens.Color.Primary` → `{source.color.primary}` → `#00cc92`
 - `DarkThemeTokens.Color.Background` → `{source.color.black}` → `#000000`
 
 ## Versioning
 
 The package follows Semantic Versioning:
+
 - **Major**: Breaking changes to token names or structure
-- **Minor**: New tokens or non-breaking enhancements  
+- **Minor**: New tokens or non-breaking enhancements
 - **Patch**: Bug fixes or documentation updates
 
 ## Support
@@ -275,4 +293,3 @@ The package follows Semantic Versioning:
 ## License
 
 MIT License - See LICENSE file for details.
-
