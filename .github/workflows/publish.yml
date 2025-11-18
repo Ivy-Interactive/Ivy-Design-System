@@ -13,12 +13,14 @@ jobs:
     runs-on: ubuntu-latest
 
     permissions:
-      contents: read
+      contents: write
       packages: write
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -41,6 +43,27 @@ jobs:
       - name: Install npm dependencies
         run: npm ci
 
+      - name: Sync version
+        run: |
+          EXPECTED_VERSION="${{ steps.extract_version.outputs.VERSION }}"
+          echo "Syncing versions to $EXPECTED_VERSION..."
+          npm run sync-version $EXPECTED_VERSION
+
+      - name: Commit version changes
+        run: |
+          EXPECTED_VERSION="${{ steps.extract_version.outputs.VERSION }}"
+          BRANCH="${{ github.ref_name }}"
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add package.json Ivy.DesignSystem.csproj
+          if git diff --staged --quiet; then
+            echo "No version changes to commit"
+          else
+            git commit -m "chore: bump version to $EXPECTED_VERSION"
+            git push origin $BRANCH
+            echo "✓ Version changes committed and pushed to $BRANCH"
+          fi
+
       - name: Validate version synchronization
         run: |
           NPM_VERSION=$(node -p "require('./package.json').version")
@@ -57,8 +80,7 @@ jobs:
           fi
 
           if [ "$NPM_VERSION" != "$EXPECTED_VERSION" ]; then
-            echo "❌ Version mismatch! package.json/.csproj has $NPM_VERSION but workflow input is $EXPECTED_VERSION"
-            echo "💡 Tip: Run 'npm run sync-version $EXPECTED_VERSION' before triggering this workflow"
+            echo "❌ Version sync failed! Expected $EXPECTED_VERSION but got $NPM_VERSION"
             exit 1
           fi
 
