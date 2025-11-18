@@ -1,9 +1,12 @@
 name: Publish Packages
 
 on:
-  push:
-    tags:
-      - "v*.*.*" # Trigger on version tags like v1.0.0
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version to publish (e.g., 1.2.0)"
+        required: true
+        type: string
 
 jobs:
   publish:
@@ -28,12 +31,12 @@ jobs:
         with:
           dotnet-version: "8.0.x"
 
-      - name: Extract version from tag
+      - name: Extract version
         id: extract_version
         run: |
-          TAG_NAME=${GITHUB_REF#refs/tags/v}
-          echo "VERSION=$TAG_NAME" >> $GITHUB_OUTPUT
-          echo "Extracted version: $TAG_NAME"
+          VERSION="${{ github.event.inputs.version }}"
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+          echo "Using version: $VERSION"
 
       - name: Install npm dependencies
         run: npm ci
@@ -42,19 +45,20 @@ jobs:
         run: |
           NPM_VERSION=$(node -p "require('./package.json').version")
           NUGET_VERSION=$(grep -oP '<Version>\K[^<]+' Ivy.DesignSystem.csproj)
-          TAG_VERSION="${{ steps.extract_version.outputs.VERSION }}"
+          EXPECTED_VERSION="${{ steps.extract_version.outputs.VERSION }}"
 
           echo "npm version: $NPM_VERSION"
           echo "NuGet version: $NUGET_VERSION"
-          echo "Git tag version: $TAG_VERSION"
+          echo "Expected version: $EXPECTED_VERSION"
 
           if [ "$NPM_VERSION" != "$NUGET_VERSION" ]; then
             echo "❌ Version mismatch between package.json and .csproj!"
             exit 1
           fi
 
-          if [ "$NPM_VERSION" != "$TAG_VERSION" ]; then
-            echo "❌ Version mismatch between package.json and git tag!"
+          if [ "$NPM_VERSION" != "$EXPECTED_VERSION" ]; then
+            echo "❌ Version mismatch! package.json/.csproj has $NPM_VERSION but workflow input is $EXPECTED_VERSION"
+            echo "💡 Tip: Run 'npm run sync-version $EXPECTED_VERSION' before triggering this workflow"
             exit 1
           fi
 
