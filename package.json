@@ -32,7 +32,9 @@
     "clean": "rm -rf dist",
     "sync-version": "tsx scripts/sync-version.ts",
     "prepublishOnly": "npm run clean && npm run build",
-    "test": "echo \"No tests yet\" && exit 0"
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:ui": "vitest --ui"
   },
   "keywords": [
     "design-tokens",
@@ -53,7 +55,9 @@
     "url": "https://github.com/Ivy-Interactive/Ivy-Design-System/issues"
   },
   "devDependencies": {
+    "@vitest/ui": "^4.0.10",
     "tsx": "^4.19.2",
-    "typescript": "^5.7.3"
+    "typescript": "^5.7.3",
+    "vitest": "^4.0.10"
   }
 }

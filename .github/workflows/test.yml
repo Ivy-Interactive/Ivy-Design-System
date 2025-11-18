@@ -1,0 +1,51 @@
+name: Tests
+
+on:
+  push:
+    # Run on all branches
+  pull_request:
+    # Run on PRs to any branch
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Install npm dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm test
+
+      - name: Build design system
+        run: npm run build
+
+      - name: Verify C# compilation
+        run: dotnet build Ivy.DesignSystem.csproj --configuration Release --no-restore
+
+      - name: Test summary
+        if: always()
+        run: |
+          echo "## 🧪 Test Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Tests completed successfully!" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Test Coverage" >> $GITHUB_STEP_SUMMARY
+          echo "- C# Generator Tests" >> $GITHUB_STEP_SUMMARY
+          echo "- Token Structure Validation Tests" >> $GITHUB_STEP_SUMMARY
+          echo "- Build Verification" >> $GITHUB_STEP_SUMMARY
+

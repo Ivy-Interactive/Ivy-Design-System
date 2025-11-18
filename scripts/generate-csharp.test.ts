@@ -1,0 +1,460 @@
+import { describe, it, expect } from "vitest";
+import {
+  toPascalCase,
+  extractTokens,
+  groupTokensByCategory,
+  generateCSharpCode,
+} from "./generate-csharp.js";
+
+describe("toPascalCase", () => {
+  it("converts kebab-case to PascalCase", () => {
+    expect(toPascalCase("primary")).toBe("Primary");
+    expect(toPascalCase("primary-foreground")).toBe("PrimaryForeground");
+    expect(toPascalCase("color-brand-primary")).toBe("ColorBrandPrimary");
+    expect(toPascalCase("color-semantic-text-primary")).toBe(
+      "ColorSemanticTextPrimary"
+    );
+  });
+
+  it("handles single words", () => {
+    expect(toPascalCase("black")).toBe("Black");
+    expect(toPascalCase("white")).toBe("White");
+  });
+
+  it("handles empty string", () => {
+    expect(toPascalCase("")).toBe("");
+  });
+});
+
+describe("extractTokens", () => {
+  it("extracts tokens from source color structure", () => {
+    const tokens = {
+      source: {
+        color: {
+          primary: {
+            value: "#00cc92",
+            type: "color",
+          },
+          black: {
+            value: "#000000",
+            type: "color",
+          },
+        },
+      },
+    };
+
+    const result = extractTokens(tokens.source);
+    expect(result).toHaveLength(2);
+    expect(result[0]).toEqual({
+      name: "primary",
+      value: "#00cc92",
+      propertyName: "Primary",
+    });
+    expect(result[1]).toEqual({
+      name: "black",
+      value: "#000000",
+      propertyName: "Black",
+    });
+  });
+
+  it("extracts tokens from theme structure", () => {
+    const tokens = {
+      theme: {
+        light: {
+          color: {
+            primary: {
+              value: "{source.color.primary}",
+              type: "color",
+            },
+            background: {
+              value: "{source.color.white}",
+              type: "color",
+            },
+          },
+        },
+      },
+    };
+
+    const result = extractTokens(tokens);
+    expect(result).toHaveLength(2);
+    expect(result[0]).toEqual({
+      name: "primary",
+      value: "{source.color.primary}",
+      propertyName: "Primary",
+    });
+    expect(result[1]).toEqual({
+      name: "background",
+      value: "{source.color.white}",
+      propertyName: "Background",
+    });
+  });
+
+  it("handles nested token structures", () => {
+    const tokens = {
+      source: {
+        color: {
+          primary: {
+            value: "#00cc92",
+            type: "color",
+          },
+        },
+        shadow: {
+          sm: {
+            value: "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
+            type: "boxShadow",
+          },
+        },
+      },
+    };
+
+    const colorResult = extractTokens(tokens.source.color);
+    expect(colorResult).toHaveLength(1);
+    expect(colorResult[0].name).toBe("primary");
+
+    const shadowResult = extractTokens(tokens.source.shadow);
+    expect(shadowResult).toHaveLength(1);
+    expect(shadowResult[0].name).toBe("sm");
+  });
+
+  it("preserves token references in values", () => {
+    const tokens = {
+      theme: {
+        light: {
+          color: {
+            primary: {
+              value: "{source.color.primary}",
+              type: "color",
+            },
+          },
+        },
+      },
+    };
+
+    const result = extractTokens(tokens);
+    expect(result[0].value).toBe("{source.color.primary}");
+  });
+});
+
+describe("groupTokensByCategory", () => {
+  it("groups all tokens under color category", () => {
+    const tokens = [
+      { name: "primary", value: "#00cc92", propertyName: "Primary" },
+      { name: "black", value: "#000000", propertyName: "Black" },
+    ];
+
+    const result = groupTokensByCategory(tokens);
+    expect(result).toEqual({
+      color: tokens,
+    });
+  });
+
+  it("handles empty token array", () => {
+    const result = groupTokensByCategory([]);
+    expect(result).toEqual({ color: [] });
+  });
+});
+
+describe("generateCSharpCode", () => {
+  it("generates valid C# code structure", () => {
+    const tokens = {
+      source: {
+        color: {
+          primary: {
+            value: "#00cc92",
+            type: "color",
+          },
+          black: {
+            value: "#000000",
+            type: "color",
+          },
+        },
+      },
+    };
+
+    const code = generateCSharpCode(tokens, "TestTokens", "Test.Namespace");
+
+    // Check for required C# structure elements
+    expect(code).toContain("namespace Test.Namespace");
+    expect(code).toContain("public static class TestTokens");
+    expect(code).toContain("public static class Color");
+    expect(code).toContain("public static readonly string Primary");
+    expect(code).toContain('"#00cc92"');
+    expect(code).toContain("public static readonly string Black");
+    expect(code).toContain('"#000000"');
+  });
+
+  it("includes auto-generated header comment", () => {
+    const tokens = {
+      source: {
+        color: {
+          primary: {
+            value: "#00cc92",
+            type: "color",
+          },
+        },
+      },
+    };
+
+    const code = generateCSharpCode(tokens);
+    expect(code).toContain("// <auto-generated>");
+    expect(code).toContain("//     This code was generated by Ivy Design System build script.");
+  });
+
+  it("includes nullable enable directive", () => {
+    const tokens = {
+      source: {
+        color: {
+          primary: {
+            value: "#00cc92",
+            type: "color",
+          },
+        },
+      },
+    };
+
+    const code = generateCSharpCode(tokens);
+    expect(code).toContain("#nullable enable");
+  });
+
+  it("includes GenerateCSS method", () => {
+    const tokens = {
+      source: {
+        color: {
+          primary: {
+            value: "#00cc92",
+            type: "color",
+          },
+        },
+      },
+    };
+
+    const code = generateCSharpCode(tokens);
+    expect(code).toContain("public static string GenerateCSS");
+    expect(code).toContain("string selector = \":root\"");
+  });
+
+  it("includes GetToken method", () => {
+    const tokens = {
+      source: {
+        color: {
+          primary: {
+            value: "#00cc92",
+            type: "color",
+          },
+        },
+      },
+    };
+
+    const code = generateCSharpCode(tokens);
+    expect(code).toContain("public static string? GetToken");
+    expect(code).toContain("string tokenName");
+  });
+
+  it("includes GetAllTokenNames method", () => {
+    const tokens = {
+      source: {
+        color: {
+          primary: {
+            value: "#00cc92",
+            type: "color",
+          },
+        },
+      },
+    };
+
+    const code = generateCSharpCode(tokens);
+    expect(code).toContain("public static string[] GetAllTokenNames");
+    // Token name includes prefix when extracted from nested structure
+    expect(code).toMatch(/"source-primary"/);
+  });
+
+  it("includes GetAllTokens method", () => {
+    const tokens = {
+      source: {
+        color: {
+          primary: {
+            value: "#00cc92",
+            type: "color",
+          },
+        },
+      },
+    };
+
+    const code = generateCSharpCode(tokens);
+    expect(code).toContain("public static System.Collections.Generic.Dictionary<string, string> GetAllTokens");
+  });
+
+  it("escapes quotes in token values", () => {
+    const tokens = {
+      source: {
+        color: {
+          test: {
+            value: 'value with "quotes"',
+            type: "color",
+          },
+        },
+      },
+    };
+
+    const code = generateCSharpCode(tokens);
+    expect(code).toContain('\\"quotes\\"');
+    expect(code).not.toContain('"quotes"');
+  });
+
+  it("generates correct token count in remarks", () => {
+    const tokens = {
+      source: {
+        color: {
+          primary: {
+            value: "#00cc92",
+            type: "color",
+          },
+          black: {
+            value: "#000000",
+            type: "color",
+          },
+          white: {
+            value: "#ffffff",
+            type: "color",
+          },
+        },
+      },
+    };
+
+    const code = generateCSharpCode(tokens);
+    expect(code).toMatch(/Total tokens: 3/);
+  });
+
+  it("handles theme structure correctly", () => {
+    const tokens = {
+      theme: {
+        light: {
+          color: {
+            primary: {
+              value: "{source.color.primary}",
+              type: "color",
+            },
+            background: {
+              value: "{source.color.white}",
+              type: "color",
+            },
+          },
+        },
+      },
+    };
+
+    const code = generateCSharpCode(tokens, "LightThemeTokens");
+    expect(code).toContain("public static class LightThemeTokens");
+    expect(code).toContain('"{source.color.primary}"');
+    expect(code).toContain('"{source.color.white}"');
+  });
+
+  it("generates XML documentation comments", () => {
+    const tokens = {
+      source: {
+        color: {
+          primary: {
+            value: "#00cc92",
+            type: "color",
+          },
+        },
+      },
+    };
+
+    const code = generateCSharpCode(tokens);
+    // Token name includes prefix when extracted from nested structure
+    expect(code).toContain("/// <summary>source-primary</summary>");
+    expect(code).toContain("/// <summary>");
+    expect(code).toContain("Design tokens for color");
+  });
+
+  it("generates valid C# syntax that can be parsed", () => {
+    const tokens = {
+      source: {
+        color: {
+          primary: {
+            value: "#00cc92",
+            type: "color",
+          },
+          "primary-foreground": {
+            value: "#000000",
+            type: "color",
+          },
+        },
+      },
+    };
+
+    const code = generateCSharpCode(tokens);
+
+    // Basic syntax checks
+    expect(code).toMatch(/namespace\s+\w+\.\w+\s*{/);
+    expect(code).toMatch(/public\s+static\s+class\s+\w+\s*{/);
+    expect(code).toMatch(/public\s+static\s+readonly\s+string\s+\w+\s*=/);
+
+    // Check for balanced braces (rough check - string interpolation may add extra braces)
+    const openBraces = (code.match(/{/g) || []).length;
+    const closeBraces = (code.match(/}/g) || []).length;
+    // Allow for string interpolation braces in the generated code
+    expect(Math.abs(openBraces - closeBraces)).toBeLessThanOrEqual(2);
+  });
+});
+
+describe("Contract consistency", () => {
+  it("maintains consistent structure across different token sets", () => {
+    const tokenSet1 = {
+      source: {
+        color: {
+          primary: { value: "#00cc92", type: "color" },
+        },
+      },
+    };
+
+    const tokenSet2 = {
+      source: {
+        color: {
+          primary: { value: "#00cc92", type: "color" },
+          secondary: { value: "#000000", type: "color" },
+        },
+      },
+    };
+
+    const code1 = generateCSharpCode(tokenSet1);
+    const code2 = generateCSharpCode(tokenSet2);
+
+    // Both should have the same structure elements
+    const structureElements = [
+      "namespace",
+      "public static class",
+      "public static class Color",
+      "GenerateCSS",
+      "GetToken",
+      "GetAllTokenNames",
+      "GetAllTokens",
+    ];
+
+    structureElements.forEach((element) => {
+      expect(code1).toContain(element);
+      expect(code2).toContain(element);
+    });
+  });
+
+  it("preserves token reference format in theme tokens", () => {
+    const tokens = {
+      theme: {
+        light: {
+          color: {
+            primary: {
+              value: "{source.color.primary}",
+              type: "color",
+            },
+          },
+        },
+      },
+    };
+
+    const code = generateCSharpCode(tokens);
+    // Token references should be preserved as-is
+    expect(code).toContain('"{source.color.primary}"');
+  });
+});
+

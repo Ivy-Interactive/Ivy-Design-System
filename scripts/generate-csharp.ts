@@ -6,7 +6,7 @@ import { writeFile } from "fs/promises";
  *   color-brand-primary -> ColorBrandPrimary
  *   color-semantic-text-primary -> ColorSemanticTextPrimary
  */
-function toPascalCase(str: string): string {
+export function toPascalCase(str: string): string {
   return str
     .split("-")
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
@@ -17,7 +17,7 @@ function toPascalCase(str: string): string {
  * Extracts all tokens with their names and values from nested structure
  * Handles both direct color structure and theme structure (theme.dark.color, theme.light.color)
  */
-function extractTokens(
+export function extractTokens(
   obj: any,
   prefix = ""
 ): Array<{ name: string; value: string; propertyName: string }> {
@@ -63,7 +63,7 @@ function extractTokens(
 /**
  * Groups tokens by category - for simplified structure, all tokens are under 'color'
  */
-function groupTokensByCategory(
+export function groupTokensByCategory(
   tokens: Array<{ name: string; value: string; propertyName: string }>
 ) {
   // All tokens are color tokens in the simplified structure
@@ -71,18 +71,17 @@ function groupTokensByCategory(
 }
 
 /**
- * Generates C# static class with design tokens
+ * Generates C# code string (without writing to file)
  * @param tokens - All tokens object
- * @param outputPath - Output file path
  * @param className - Name of the C# class (default: DesignSystemTokens)
  * @param namespace - C# namespace (default: Ivy.Themes)
+ * @returns Generated C# code as string
  */
-export async function generateCSharp(
+export function generateCSharpCode(
   tokens: any,
-  outputPath: string,
   className = "DesignSystemTokens",
   namespace = "Ivy.Themes"
-) {
+): string {
   const extractedTokens = extractTokens(tokens);
   const groupedTokens = groupTokensByCategory(extractedTokens);
 
@@ -233,6 +232,29 @@ ${categoryNames
     }
 }
 `;
+
+  return csharp;
+}
+
+/**
+ * Generates C# static class with design tokens and writes to file
+ * @param tokens - All tokens object
+ * @param outputPath - Output file path
+ * @param className - Name of the C# class (default: DesignSystemTokens)
+ * @param namespace - C# namespace (default: Ivy.Themes)
+ */
+export async function generateCSharp(
+  tokens: any,
+  outputPath: string,
+  className = "DesignSystemTokens",
+  namespace = "Ivy.Themes"
+) {
+  const csharp = generateCSharpCode(tokens, className, namespace);
+  const extractedTokens = extractTokens(tokens);
+  const groupedTokens = groupTokensByCategory(extractedTokens);
+  const categoryNames = Object.keys(groupedTokens).map((cat) =>
+    toPascalCase(cat)
+  );
 
   await writeFile(outputPath, csharp);
   console.log(`  ✓ ${outputPath}`);
