@@ -61,6 +61,36 @@ export function extractTokens(
 }
 
 /**
+ * Resolves token references like {source.color.primary} to actual values
+ */
+function resolveTokenReference(
+  value: string,
+  sourceTokens: Record<string, any>
+): string {
+  // Check if it's a reference format: {source.color.token-name}
+  const referenceMatch = value.match(/^\{source\.color\.([\w-]+)\}$/);
+  if (referenceMatch) {
+    const tokenName = referenceMatch[1];
+    // Look up in source tokens - sourceTokens is the source object with color property
+    if (sourceTokens && sourceTokens.color && sourceTokens.color[tokenName]) {
+      const sourceValue = sourceTokens.color[tokenName];
+      if (
+        typeof sourceValue === "object" &&
+        sourceValue !== null &&
+        "value" in sourceValue
+      ) {
+        return sourceValue.value as string;
+      } else if (typeof sourceValue === "string") {
+        return sourceValue;
+      }
+    }
+    // If not found, return as-is (will be a reference string)
+  }
+  // If not a reference or not found, return as-is
+  return value;
+}
+
+/**
  * Groups tokens by category - for simplified structure, all tokens are under 'color'
  */
 export function groupTokensByCategory(
@@ -75,14 +105,25 @@ export function groupTokensByCategory(
  * @param tokens - All tokens object
  * @param className - Name of the C# class (default: DesignSystemTokens)
  * @param namespace - C# namespace (default: Ivy.Themes)
+ * @param sourceTokens - Source tokens for resolving references (optional)
  * @returns Generated C# code as string
  */
 export function generateCSharpCode(
   tokens: any,
   className = "DesignSystemTokens",
-  namespace = "Ivy.Themes"
+  namespace = "Ivy.Themes",
+  sourceTokens?: any
 ): string {
-  const extractedTokens = extractTokens(tokens);
+  let extractedTokens = extractTokens(tokens);
+
+  // Resolve references if source tokens are provided
+  if (sourceTokens) {
+    extractedTokens = extractedTokens.map((token) => ({
+      ...token,
+      value: resolveTokenReference(token.value, sourceTokens),
+    }));
+  }
+
   const groupedTokens = groupTokensByCategory(extractedTokens);
 
   // Generate nested classes for each category
@@ -242,14 +283,16 @@ ${categoryNames
  * @param outputPath - Output file path
  * @param className - Name of the C# class (default: DesignSystemTokens)
  * @param namespace - C# namespace (default: Ivy.Themes)
+ * @param sourceTokens - Source tokens for resolving references (optional)
  */
 export async function generateCSharp(
   tokens: any,
   outputPath: string,
   className = "DesignSystemTokens",
-  namespace = "Ivy.Themes"
+  namespace = "Ivy.Themes",
+  sourceTokens?: any
 ) {
-  const csharp = generateCSharpCode(tokens, className, namespace);
+  const csharp = generateCSharpCode(tokens, className, namespace, sourceTokens);
   const extractedTokens = extractTokens(tokens);
   const groupedTokens = groupTokensByCategory(extractedTokens);
   const categoryNames = Object.keys(groupedTokens).map((cat) =>

@@ -1,11 +1,38 @@
 import { writeFile } from "fs/promises";
 
 /**
+ * Resolves token references like {source.color.primary} to actual values
+ */
+function resolveTokenReference(
+  value: string,
+  sourceTokens?: Record<string, any>
+): string {
+  if (!sourceTokens) return value;
+  
+  // Check if it's a reference format: {source.color.token-name}
+  const referenceMatch = value.match(/^\{source\.color\.([\w-]+)\}$/);
+  if (referenceMatch) {
+    const tokenName = referenceMatch[1];
+    // Look up in source tokens
+    if (sourceTokens.color && sourceTokens.color[tokenName]) {
+      const sourceValue = sourceTokens.color[tokenName];
+      if (typeof sourceValue === "object" && sourceValue !== null && "value" in sourceValue) {
+        return sourceValue.value as string;
+      } else if (typeof sourceValue === "string") {
+        return sourceValue;
+      }
+    }
+  }
+  // If not a reference or not found, return as-is
+  return value;
+}
+
+/**
  * Converts token objects to CSS custom properties
  * Handles nested token structures recursively
  * Handles both direct color structure and theme structure (theme.dark.color, theme.light.color)
  */
-function tokenToCSS(obj: any, prefix = ""): string {
+function tokenToCSS(obj: any, prefix = "", sourceTokens?: Record<string, any>): string {
   let css = "";
 
   // Handle theme structure (theme.dark.color or theme.light.color)
@@ -14,14 +41,15 @@ function tokenToCSS(obj: any, prefix = ""): string {
     if (obj.theme[themeKey]?.color) {
       return tokenToCSS(
         obj.theme[themeKey].color,
-        prefix ? `${prefix}-color` : "color"
+        prefix ? `${prefix}-color` : "color",
+        sourceTokens
       );
     }
   }
 
   // Handle direct color structure
   if (obj.color) {
-    return tokenToCSS(obj.color, prefix ? `${prefix}-color` : "color");
+    return tokenToCSS(obj.color, prefix ? `${prefix}-color` : "color", sourceTokens);
   }
 
   // Extract tokens from current level
@@ -30,11 +58,12 @@ function tokenToCSS(obj: any, prefix = ""): string {
       // Check if this is a token with a value property
       if ("value" in value && "type" in value) {
         const varName = prefix ? `${prefix}-${key}` : key;
-        css += `  --${varName}: ${value.value};\n`;
+        const resolvedValue = resolveTokenReference(value.value as string, sourceTokens);
+        css += `  --${varName}: ${resolvedValue};\n`;
       } else if (key !== "theme") {
         // Recursively process nested objects, skip theme key
         const newPrefix = prefix ? `${prefix}-${key}` : key;
-        css += tokenToCSS(value, newPrefix);
+        css += tokenToCSS(value, newPrefix, sourceTokens);
       }
     }
   }
@@ -47,13 +76,15 @@ function tokenToCSS(obj: any, prefix = ""): string {
  * @param tokens - Token object to convert
  * @param outputPath - Output file path
  * @param isDark - Whether this is for dark mode (uses .dark selector)
+ * @param sourceTokens - Source tokens for resolving references (optional)
  */
 export async function generateCSS(
   tokens: any,
   outputPath: string,
-  isDark = false
+  isDark = false,
+  sourceTokens?: Record<string, any>
 ) {
-  const cssVars = tokenToCSS(tokens);
+  const cssVars = tokenToCSS(tokens, "", sourceTokens);
 
   let css: string;
   if (isDark) {

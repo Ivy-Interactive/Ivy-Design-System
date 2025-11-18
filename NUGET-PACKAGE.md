@@ -38,11 +38,11 @@ Source design tokens (base color values, no duplicates)
 
 #### `LightThemeTokens`
 
-Light theme tokens that reference source colors
+Light theme tokens with resolved color values (ready to use)
 
 #### `DarkThemeTokens`
 
-Dark theme tokens that reference source colors
+Dark theme tokens with resolved color values (ready to use)
 
 ### 2. Token Structure
 
@@ -116,9 +116,11 @@ using Ivy.Themes;
 // Generate CSS for light theme
 string lightThemeCSS = LightThemeTokens.GenerateCSS(":root");
 // Output: :root { --primary: #00cc92; --background: #ffffff; ... }
+// Note: All values are actual color codes, ready to use directly
 
 // Generate CSS for dark theme with custom selector
 string darkThemeCSS = DarkThemeTokens.GenerateCSS("[data-theme='dark']");
+// Output: [data-theme='dark'] { --primary: #00cc92; --background: #000000; ... }
 ```
 
 ### Get Token by Name
@@ -212,13 +214,14 @@ Each token class provides these utility methods:
 
 ### `GenerateCSS(string selector = ":root")`
 
-Generates CSS custom properties string for all tokens.
+Generates CSS custom properties string for all tokens with **actual color values**.
 
 **Example:**
 
 ```csharp
 string css = LightThemeTokens.GenerateCSS();
-// Returns: ":root { --primary: #00cc92; --background: #ffffff; ... }"
+// Returns: ":root { --primary: #00cc92; --background: #ffffff; --secondary: #dfe7e3; ... }"
+// All values are resolved color codes, ready to use in CSS
 ```
 
 ### `GetToken(string tokenName)`
@@ -263,18 +266,17 @@ The NuGet package contains:
 - **README.md**: Package documentation
 - **Symbols Package** (`.snupkg`): For debugging support
 
-## Token Reference Format
+## Token Values
 
-Theme tokens reference source tokens using the format:
+**All token values are resolved to actual color codes at build time.**
 
-```
-{source.color.token-name}
-```
+The NuGet package contains **raw, ready-to-use color values** - no references or placeholders. You can use these values directly in your code:
 
-For example:
+- `LightThemeTokens.Color.Primary` → `"#00cc92"` (actual hex color)
+- `DarkThemeTokens.Color.Background` → `"#000000"` (actual hex color)
+- `LightThemeTokens.GenerateCSS()` → outputs actual color codes like `--primary: #00cc92;`
 
-- `LightThemeTokens.Color.Primary` → `{source.color.primary}` → `#00cc92`
-- `DarkThemeTokens.Color.Background` → `{source.color.black}` → `#000000`
+**Note**: Theme tokens are derived from source tokens during the build process, but the final package contains only resolved color values. This ensures maximum compatibility and ease of use in consuming projects.
 
 ## Versioning
 

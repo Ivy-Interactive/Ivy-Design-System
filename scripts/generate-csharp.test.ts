@@ -438,8 +438,25 @@ describe("Contract consistency", () => {
     });
   });
 
-  it("preserves token reference format in theme tokens", () => {
-    const tokens = {
+  it("resolves token references to actual color values", () => {
+    const sourceTokens = {
+      color: {
+        primary: {
+          value: "#00cc92",
+          type: "color",
+        },
+        black: {
+          value: "#000000",
+          type: "color",
+        },
+        white: {
+          value: "#ffffff",
+          type: "color",
+        },
+      },
+    };
+
+    const themeTokens = {
       theme: {
         light: {
           color: {
@@ -447,14 +464,75 @@ describe("Contract consistency", () => {
               value: "{source.color.primary}",
               type: "color",
             },
+            background: {
+              value: "{source.color.white}",
+              type: "color",
+            },
+            foreground: {
+              value: "{source.color.black}",
+              type: "color",
+            },
           },
         },
       },
     };
 
-    const code = generateCSharpCode(tokens);
-    // Token references should be preserved as-is
-    expect(code).toContain('"{source.color.primary}"');
+    const code = generateCSharpCode(themeTokens, "LightThemeTokens", "Ivy.Themes", sourceTokens);
+    
+    // References should be resolved to actual color values
+    expect(code).toContain('Primary = "#00cc92"');
+    expect(code).toContain('Background = "#ffffff"');
+    expect(code).toContain('Foreground = "#000000"');
+    
+    // Should NOT contain references
+    expect(code).not.toContain('{source.color.primary}');
+    expect(code).not.toContain('{source.color.white}');
+    expect(code).not.toContain('{source.color.black}');
+  });
+
+  it("ensures GenerateCSS outputs actual color values, not references", () => {
+    const sourceTokens = {
+      color: {
+        primary: {
+          value: "#00cc92",
+          type: "color",
+        },
+        white: {
+          value: "#ffffff",
+          type: "color",
+        },
+      },
+    };
+
+    const themeTokens = {
+      theme: {
+        light: {
+          color: {
+            primary: {
+              value: "{source.color.primary}",
+              type: "color",
+            },
+            background: {
+              value: "{source.color.white}",
+              type: "color",
+            },
+          },
+        },
+      },
+    };
+
+    const code = generateCSharpCode(themeTokens, "LightThemeTokens", "Ivy.Themes", sourceTokens);
+    
+    // Verify the static properties contain actual values
+    expect(code).toContain('public static readonly string Primary = "#00cc92"');
+    expect(code).toContain('public static readonly string Background = "#ffffff"');
+    
+    // Verify GenerateCSS method will output actual values (it reads from these properties)
+    expect(code).toContain("GenerateCSS");
+    expect(code).toContain("field.GetValue(null)");
+    
+    // The generated CSS will use the resolved values from the properties
+    // Since Primary = "#00cc92", GenerateCSS will output --primary: #00cc92;
   });
 });
 

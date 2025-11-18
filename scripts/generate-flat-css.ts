@@ -67,6 +67,33 @@ const THEME_MAPPING: Record<string, string> = {
 };
 
 /**
+ * Resolves token references like {source.color.primary} to actual values
+ */
+function resolveTokenReference(
+  value: string,
+  sourceTokens?: Record<string, any>
+): string {
+  if (!sourceTokens) return value;
+  
+  // Check if it's a reference format: {source.color.token-name}
+  const referenceMatch = value.match(/^\{source\.color\.([\w-]+)\}$/);
+  if (referenceMatch) {
+    const tokenName = referenceMatch[1];
+    // Look up in source tokens
+    if (sourceTokens.color && sourceTokens.color[tokenName]) {
+      const sourceValue = sourceTokens.color[tokenName];
+      if (typeof sourceValue === "object" && sourceValue !== null && "value" in sourceValue) {
+        return sourceValue.value as string;
+      } else if (typeof sourceValue === "string") {
+        return sourceValue;
+      }
+    }
+  }
+  // If not a reference or not found, return as-is
+  return value;
+}
+
+/**
  * Converts token objects to flat CSS custom properties using mapping
  * Handles nested token structures recursively
  * Handles both direct color structure and theme structure (theme.dark.color, theme.light.color)
@@ -74,7 +101,8 @@ const THEME_MAPPING: Record<string, string> = {
 function tokenToFlatCSS(
   obj: any,
   prefix = "",
-  mapping: Record<string, string>
+  mapping: Record<string, string>,
+  sourceTokens?: Record<string, any>
 ): string {
   let css = "";
 
@@ -85,14 +113,15 @@ function tokenToFlatCSS(
       return tokenToFlatCSS(
         obj.theme[themeKey].color,
         `theme-${themeKey}-color`,
-        mapping
+        mapping,
+        sourceTokens
       );
     }
   }
 
   // Handle direct color structure
   if (obj.color) {
-    return tokenToFlatCSS(obj.color, "color", mapping);
+    return tokenToFlatCSS(obj.color, "color", mapping, sourceTokens);
   }
 
   // Extract tokens from current level
@@ -102,12 +131,13 @@ function tokenToFlatCSS(
       if ("value" in value && "type" in value) {
         const structuredName = prefix ? `${prefix}-${key}` : key;
         const flatName = mapping[structuredName] || key;
+        const resolvedValue = resolveTokenReference(value.value as string, sourceTokens);
 
-        css += `  --${flatName}: ${value.value};\n`;
+        css += `  --${flatName}: ${resolvedValue};\n`;
       } else if (key !== "theme") {
         // Recursively process nested objects, skip theme key
         const newPrefix = prefix ? `${prefix}-${key}` : key;
-        css += tokenToFlatCSS(value, newPrefix, mapping);
+        css += tokenToFlatCSS(value, newPrefix, mapping, sourceTokens);
       }
     }
   }
@@ -124,10 +154,11 @@ function tokenToFlatCSS(
 export async function generateFlatCSS(
   tokens: any,
   outputPath: string,
-  isDark = false
+  isDark = false,
+  sourceTokens?: Record<string, any>
 ) {
-  const mapping = isDark ? THEME_MAPPING : TOKEN_MAPPING;
-  const cssVars = tokenToFlatCSS(tokens, "", mapping);
+  const mapping = isDark ? { ...TOKEN_MAPPING, ...THEME_MAPPING } : TOKEN_MAPPING;
+  const cssVars = tokenToFlatCSS(tokens, "", mapping, sourceTokens);
 
   let css: string;
   if (isDark) {
