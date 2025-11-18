@@ -34,8 +34,11 @@ jobs:
       - name: Build design system
         run: npm run build
 
+      - name: Restore .NET dependencies
+        run: dotnet restore Ivy.DesignSystem.csproj
+
       - name: Verify C# compilation
-        run: dotnet build Ivy.DesignSystem.csproj --configuration Release --no-restore
+        run: dotnet build Ivy.DesignSystem.csproj --configuration Release
 
       - name: Test summary
         if: always()
