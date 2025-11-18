@@ -9,7 +9,7 @@
 
     <!-- Package Metadata -->
     <PackageId>Ivy.DesignSystem</PackageId>
-    <Version>1.1.4</Version>
+    <Version>1.1.5</Version>
     <Authors>Ivy Interactive</Authors>
     <Company>Ivy Interactive</Company>
     <Description>Modular multi-product token-based design system for Ivy products. Provides design tokens as C# static classes for use in ASP.NET applications.</Description>
