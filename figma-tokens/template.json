@@ -1,0 +1,106 @@
+{
+  "source": {
+    "color": {
+      "primary": {
+        "value": "#00cc92",
+        "type": "color"
+      },
+      "black": {
+        "value": "#000000",
+        "type": "color"
+      }
+    },
+    "shadow": {
+      "sm": {
+        "value": "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
+        "type": "boxShadow"
+      },
+      "md": {
+        "value": "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
+        "type": "boxShadow"
+      }
+    },
+    "spacing": {
+      "xs": {
+        "value": "4px",
+        "type": "spacing"
+      },
+      "sm": {
+        "value": "8px",
+        "type": "spacing"
+      },
+      "md": {
+        "value": "16px",
+        "type": "spacing"
+      }
+    },
+    "size": {
+      "sm": {
+        "value": "24px",
+        "type": "sizing"
+      },
+      "md": {
+        "value": "32px",
+        "type": "sizing"
+      },
+      "lg": {
+        "value": "40px",
+        "type": "sizing"
+      }
+    }
+  },
+  "theme": {
+    "light": {
+      "color": {
+        "primary": {
+          "value": "{source.color.primary}",
+          "type": "color"
+        }
+      },
+      "shadow": {
+        "card": {
+          "value": "{source.shadow.md}",
+          "type": "boxShadow"
+        }
+      },
+      "spacing": {
+        "button-padding": {
+          "value": "{source.spacing.md}",
+          "type": "spacing"
+        }
+      },
+      "size": {
+        "button": {
+          "value": "{source.size.md}",
+          "type": "sizing"
+        }
+      }
+    },
+    "dark": {
+      "color": {
+        "primary": {
+          "value": "{source.color.primary}",
+          "type": "color"
+        }
+      },
+      "shadow": {
+        "card": {
+          "value": "{source.shadow.md}",
+          "type": "boxShadow"
+        }
+      },
+      "spacing": {
+        "button-padding": {
+          "value": "{source.spacing.md}",
+          "type": "spacing"
+        }
+      },
+      "size": {
+        "button": {
+          "value": "{source.size.md}",
+          "type": "sizing"
+        }
+      }
+    }
+  }
+}
