@@ -68,6 +68,74 @@
       "card-dark": {
         "value": "#171717",
         "type": "color"
+      },
+      "chromatic-red": {
+        "value": "#dd5860",
+        "type": "color"
+      },
+      "chromatic-orange": {
+        "value": "#dc824d",
+        "type": "color"
+      },
+      "chromatic-amber": {
+        "value": "#deb145",
+        "type": "color"
+      },
+      "chromatic-yellow": {
+        "value": "#e5e04c",
+        "type": "color"
+      },
+      "chromatic-lime": {
+        "value": "#afd953",
+        "type": "color"
+      },
+      "chromatic-green": {
+        "value": "#86d26f",
+        "type": "color"
+      },
+      "chromatic-emerald": {
+        "value": "#76cd94",
+        "type": "color"
+      },
+      "chromatic-teal": {
+        "value": "#5b9ba8",
+        "type": "color"
+      },
+      "chromatic-cyan": {
+        "value": "#4469c0",
+        "type": "color"
+      },
+      "chromatic-sky": {
+        "value": "#373bda",
+        "type": "color"
+      },
+      "chromatic-blue": {
+        "value": "#381ff4",
+        "type": "color"
+      },
+      "chromatic-indigo": {
+        "value": "#4b28e2",
+        "type": "color"
+      },
+      "chromatic-violet": {
+        "value": "#6637d1",
+        "type": "color"
+      },
+      "chromatic-purple": {
+        "value": "#844cc0",
+        "type": "color"
+      },
+      "chromatic-fuchsia": {
+        "value": "#a361af",
+        "type": "color"
+      },
+      "chromatic-pink": {
+        "value": "#c377a0",
+        "type": "color"
+      },
+      "chromatic-rose": {
+        "value": "#e48e91",
+        "type": "color"
       }
     }
   },
