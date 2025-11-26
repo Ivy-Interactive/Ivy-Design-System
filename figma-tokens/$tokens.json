@@ -386,6 +386,108 @@
           "blue": {
             "value": "#3b82f6",
             "type": "color"
+          },
+          "surface-secondary": {
+            "value": "#f8f9fa",
+            "type": "color"
+          },
+          "surface-tertiary": {
+            "value": "#f1f3f4",
+            "type": "color"
+          },
+          "surface-elevated": {
+            "value": "#ffffff",
+            "type": "color"
+          },
+          "surface-dark-primary": {
+            "value": "#061109",
+            "type": "color"
+          },
+          "surface-dark-secondary": {
+            "value": "#0a1a0d",
+            "type": "color"
+          },
+          "surface-dark-tertiary": {
+            "value": "#0f2312",
+            "type": "color"
+          },
+          "border-primary": {
+            "value": "#e5e7eb",
+            "type": "color"
+          },
+          "border-secondary": {
+            "value": "#d1d5db",
+            "type": "color"
+          },
+          "border-dark-primary": {
+            "value": "#374151",
+            "type": "color"
+          },
+          "border-dark-secondary": {
+            "value": "#4b5563",
+            "type": "color"
+          },
+          "text-dark-secondary": {
+            "value": "#d4f6ed",
+            "type": "color"
+          },
+          "text-dark-tertiary": {
+            "value": "#a8d4c6",
+            "type": "color"
+          },
+          "text-dark-muted": {
+            "value": "#6b7280",
+            "type": "color"
+          },
+          "text-dark-disabled": {
+            "value": "#4b5563",
+            "type": "color"
+          },
+          "overlay-light": {
+            "value": "#f4f4f4",
+            "type": "color"
+          },
+          "overlay-dark": {
+            "value": "#002817",
+            "type": "color"
+          },
+          "overlay-brand": {
+            "value": "#00cc92",
+            "type": "color"
+          },
+          "overlay-dark-light": {
+            "value": "#061109",
+            "type": "color"
+          },
+          "overlay-dark-brand": {
+            "value": "#00d18e",
+            "type": "color"
+          }
+        },
+        "opacity": {
+          "overlay-light": {
+            "value": "0.8",
+            "type": "opacity"
+          },
+          "overlay-dark": {
+            "value": "1",
+            "type": "opacity"
+          },
+          "overlay-brand": {
+            "value": "0.9",
+            "type": "opacity"
+          },
+          "overlay-dark-light": {
+            "value": "0.8",
+            "type": "opacity"
+          },
+          "overlay-dark-dark": {
+            "value": "0.1",
+            "type": "opacity"
+          },
+          "overlay-dark-brand": {
+            "value": "0.9",
+            "type": "opacity"
           }
         }
       },
@@ -487,6 +589,72 @@
             "text-brand": {
               "value": "{ivy-web.source.color.custom-teal-600}",
               "type": "color"
+            },
+            "surface-secondary": {
+              "value": "{ivy-web.source.color.surface-secondary}",
+              "type": "color"
+            },
+            "surface-tertiary": {
+              "value": "{ivy-web.source.color.surface-tertiary}",
+              "type": "color"
+            },
+            "surface-elevated": {
+              "value": "{ivy-web.source.color.surface-elevated}",
+              "type": "color"
+            },
+            "border-primary": {
+              "value": "{ivy-web.source.color.border-primary}",
+              "type": "color"
+            },
+            "border-secondary": {
+              "value": "{ivy-web.source.color.border-secondary}",
+              "type": "color"
+            },
+            "border-focus": {
+              "value": "{ivy-web.source.color.custom-teal-600}",
+              "type": "color"
+            },
+            "success": {
+              "value": "{ivy-web.source.color.green}",
+              "type": "color"
+            },
+            "warning": {
+              "value": "{ivy-web.source.color.yellow}",
+              "type": "color"
+            },
+            "error": {
+              "value": "{ivy-web.source.color.red}",
+              "type": "color"
+            },
+            "info": {
+              "value": "{ivy-web.source.color.blue}",
+              "type": "color"
+            },
+            "overlay-light": {
+              "value": "{ivy-web.source.color.overlay-light}",
+              "type": "color"
+            },
+            "overlay-dark": {
+              "value": "{ivy-web.source.color.overlay-dark}",
+              "type": "color"
+            },
+            "overlay-brand": {
+              "value": "{ivy-web.source.color.overlay-brand}",
+              "type": "color"
+            }
+          },
+          "opacity": {
+            "overlay-light": {
+              "value": "{ivy-web.source.opacity.overlay-light}",
+              "type": "opacity"
+            },
+            "overlay-dark": {
+              "value": "{ivy-web.source.opacity.overlay-dark}",
+              "type": "opacity"
+            },
+            "overlay-brand": {
+              "value": "{ivy-web.source.opacity.overlay-brand}",
+              "type": "opacity"
             }
           }
         },
@@ -587,6 +755,88 @@
             "text-brand": {
               "value": "{ivy-web.source.color.custom-teal-500}",
               "type": "color"
+            },
+            "text-secondary": {
+              "value": "{ivy-web.source.color.text-dark-secondary}",
+              "type": "color"
+            },
+            "text-tertiary": {
+              "value": "{ivy-web.source.color.text-dark-tertiary}",
+              "type": "color"
+            },
+            "text-muted": {
+              "value": "{ivy-web.source.color.text-dark-muted}",
+              "type": "color"
+            },
+            "text-disabled": {
+              "value": "{ivy-web.source.color.text-dark-disabled}",
+              "type": "color"
+            },
+            "surface-secondary": {
+              "value": "{ivy-web.source.color.surface-dark-secondary}",
+              "type": "color"
+            },
+            "surface-tertiary": {
+              "value": "{ivy-web.source.color.surface-dark-tertiary}",
+              "type": "color"
+            },
+            "surface-elevated": {
+              "value": "{ivy-web.source.color.surface-dark-secondary}",
+              "type": "color"
+            },
+            "border-primary": {
+              "value": "{ivy-web.source.color.border-dark-primary}",
+              "type": "color"
+            },
+            "border-secondary": {
+              "value": "{ivy-web.source.color.border-dark-secondary}",
+              "type": "color"
+            },
+            "border-focus": {
+              "value": "{ivy-web.source.color.custom-teal-500}",
+              "type": "color"
+            },
+            "success": {
+              "value": "{ivy-web.source.color.green}",
+              "type": "color"
+            },
+            "warning": {
+              "value": "{ivy-web.source.color.yellow}",
+              "type": "color"
+            },
+            "error": {
+              "value": "{ivy-web.source.color.red}",
+              "type": "color"
+            },
+            "info": {
+              "value": "{ivy-web.source.color.blue}",
+              "type": "color"
+            },
+            "overlay-light": {
+              "value": "{ivy-web.source.color.overlay-dark-light}",
+              "type": "color"
+            },
+            "overlay-dark": {
+              "value": "{ivy-web.source.color.overlay-dark-brand}",
+              "type": "color"
+            },
+            "overlay-brand": {
+              "value": "{ivy-web.source.color.overlay-dark-brand}",
+              "type": "color"
+            }
+          },
+          "opacity": {
+            "overlay-light": {
+              "value": "{ivy-web.source.opacity.overlay-dark-light}",
+              "type": "opacity"
+            },
+            "overlay-dark": {
+              "value": "{ivy-web.source.opacity.overlay-dark-dark}",
+              "type": "opacity"
+            },
+            "overlay-brand": {
+              "value": "{ivy-web.source.opacity.overlay-dark-brand}",
+              "type": "opacity"
             }
           }
         }
