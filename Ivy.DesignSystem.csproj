@@ -37,9 +37,16 @@
 
   <ItemGroup>
     <!-- Include all generated C# files from dist/csharp -->
-    <Compile Include="dist/csharp/IvyFrameworkTokens.cs" />
-    <Compile Include="dist/csharp/LightThemeTokens.cs" />
-    <Compile Include="dist/csharp/DarkThemeTokens.cs" />
+    <!-- Ivy Framework tokens -->
+    <Compile Include="dist/csharp/IvyFrameworkSourceTokens.cs" />
+    <Compile Include="dist/csharp/IvyFrameworkNeutralTokens.cs" />
+    <Compile Include="dist/csharp/IvyFrameworkChromaticTokens.cs" />
+    <Compile Include="dist/csharp/IvyFrameworkLightThemeTokens.cs" />
+    <Compile Include="dist/csharp/IvyFrameworkDarkThemeTokens.cs" />
+    <!-- Ivy Web tokens -->
+    <Compile Include="dist/csharp/IvyWebSourceTokens.cs" />
+    <Compile Include="dist/csharp/IvyWebLightThemeTokens.cs" />
+    <Compile Include="dist/csharp/IvyWebDarkThemeTokens.cs" />
   </ItemGroup>
 
   <ItemGroup>
