@@ -6,17 +6,19 @@ describe("Token structure contract", () => {
     const tokensContent = await readFile("figma-tokens/$tokens.json", "utf-8");
     const tokens = JSON.parse(tokensContent);
 
-    // Must have source and theme
-    expect(tokens).toHaveProperty("source");
-    expect(tokens).toHaveProperty("theme");
+    // Must have core with ivy-framework
+    expect(tokens).toHaveProperty("core");
+    expect(tokens.core).toHaveProperty("ivy-framework");
+    expect(tokens.core["ivy-framework"]).toHaveProperty("source");
+    expect(tokens.core["ivy-framework"]).toHaveProperty("theme");
   });
 
   it("source has color tokens with value and type", async () => {
     const tokensContent = await readFile("figma-tokens/$tokens.json", "utf-8");
     const tokens = JSON.parse(tokensContent);
 
-    expect(tokens.source).toHaveProperty("color");
-    const colorTokens = tokens.source.color;
+    expect(tokens.core["ivy-framework"].source).toHaveProperty("color");
+    const colorTokens = tokens.core["ivy-framework"].source.color;
 
     // Check that all color tokens have value and type
     for (const [key, token] of Object.entries(colorTokens)) {
@@ -31,16 +33,16 @@ describe("Token structure contract", () => {
     const tokensContent = await readFile("figma-tokens/$tokens.json", "utf-8");
     const tokens = JSON.parse(tokensContent);
 
-    expect(tokens.theme).toHaveProperty("light");
-    expect(tokens.theme).toHaveProperty("dark");
+    expect(tokens.core["ivy-framework"].theme).toHaveProperty("light");
+    expect(tokens.core["ivy-framework"].theme).toHaveProperty("dark");
   });
 
   it("theme colors reference source colors", async () => {
     const tokensContent = await readFile("figma-tokens/$tokens.json", "utf-8");
     const tokens = JSON.parse(tokensContent);
 
-    const lightColors = tokens.theme.light.color;
-    const darkColors = tokens.theme.dark.color;
+    const lightColors = tokens.core["ivy-framework"].theme.light.color;
+    const darkColors = tokens.core["ivy-framework"].theme.dark.color;
 
     // Check that theme colors use reference format
     for (const [key, token] of Object.entries(lightColors)) {
@@ -61,7 +63,7 @@ describe("Token structure contract", () => {
     const tokensContent = await readFile("figma-tokens/$tokens.json", "utf-8");
     const tokens = JSON.parse(tokensContent);
 
-    const colorTokens = tokens.source.color;
+    const colorTokens = tokens.core["ivy-framework"].source.color;
     const values = Object.values(colorTokens).map((token: any) => token.value);
 
     // Check for duplicates (excluding references)
@@ -79,7 +81,7 @@ describe("Token structure contract", () => {
     const tokensContent = await readFile("figma-tokens/$tokens.json", "utf-8");
     const tokens = JSON.parse(tokensContent);
 
-    const colorTokens = tokens.source.color;
+    const colorTokens = tokens.core["ivy-framework"].source.color;
     const hexColorRegex = /^#[0-9A-Fa-f]{6}$/;
     const rgbRegex = /^rgb\(/;
     const rgbaRegex = /^rgba\(/;
@@ -112,8 +114,8 @@ describe("Token structure contract", () => {
     const tokens = JSON.parse(tokensContent);
 
     // Light theme should have same keys as dark theme
-    const lightKeys = Object.keys(tokens.theme.light.color);
-    const darkKeys = Object.keys(tokens.theme.dark.color);
+    const lightKeys = Object.keys(tokens.core["ivy-framework"].theme.light.color);
+    const darkKeys = Object.keys(tokens.core["ivy-framework"].theme.dark.color);
 
     expect(lightKeys.sort()).toEqual(darkKeys.sort());
   });
@@ -122,15 +124,15 @@ describe("Token structure contract", () => {
     const tokensContent = await readFile("figma-tokens/$tokens.json", "utf-8");
     const tokens = JSON.parse(tokensContent);
 
-    const lightColors = tokens.theme.light.color;
-    const darkColors = tokens.theme.dark.color;
+    const lightColors = tokens.core["ivy-framework"].theme.light.color;
+    const darkColors = tokens.core["ivy-framework"].theme.dark.color;
 
     const checkReferences = (colors: any) => {
       for (const [key, token] of Object.entries(colors)) {
         const value = (token as any).value;
-        // If it's a reference, it should match {source.color.xxx} format
+        // If it's a reference, it should match {core.ivy-framework.source.color.xxx} or {core.ivy-web.source.color.xxx} format
         if (value.startsWith("{") && value.endsWith("}")) {
-          expect(value).toMatch(/^\{source\.color\.[\w-]+\}$/);
+          expect(value).toMatch(/^\{core\.(ivy-framework|ivy-web)\.source\.color\.[\w-]+\}$/);
         }
       }
     };

@@ -25,11 +25,11 @@ describe("Output Values Contract", () => {
         theme: {
           light: {
             color: {
-              primary: { value: "{source.color.primary}", type: "color" },
-              "primary-foreground": { value: "{source.color.black}", type: "color" },
-              background: { value: "{source.color.white}", type: "color" },
-              secondary: { value: "{source.color.secondary-light}", type: "color" },
-              destructive: { value: "{source.color.destructive}", type: "color" },
+              primary: { value: "{core.ivy-framework.source.color.primary}", type: "color" },
+              "primary-foreground": { value: "{core.ivy-framework.source.color.black}", type: "color" },
+              background: { value: "{core.ivy-framework.source.color.white}", type: "color" },
+              secondary: { value: "{core.ivy-framework.source.color.secondary-light}", type: "color" },
+              destructive: { value: "{core.ivy-framework.source.color.destructive}", type: "color" },
             },
           },
         },
@@ -50,7 +50,7 @@ describe("Output Values Contract", () => {
       expect(code).toContain('Destructive = "#dd5860"');
 
       // Verify NO references remain
-      expect(code).not.toMatch(/\{source\.color\./);
+      expect(code).not.toMatch(/\{core\.(ivy-framework|ivy-web)\.source\.color\./);
     });
 
     it("ensures GenerateCSS() outputs actual color codes", async () => {
@@ -65,8 +65,8 @@ describe("Output Values Contract", () => {
         theme: {
           light: {
             color: {
-              primary: { value: "{source.color.primary}", type: "color" },
-              background: { value: "{source.color.white}", type: "color" },
+              primary: { value: "{core.ivy-framework.source.color.primary}", type: "color" },
+              background: { value: "{core.ivy-framework.source.color.white}", type: "color" },
             },
           },
         },
@@ -103,9 +103,9 @@ describe("Output Values Contract", () => {
         theme: {
           dark: {
             color: {
-              primary: { value: "{source.color.primary}", type: "color" },
-              background: { value: "{source.color.black}", type: "color" },
-              foreground: { value: "{source.color.muted-light}", type: "color" },
+              primary: { value: "{core.ivy-framework.source.color.primary}", type: "color" },
+              background: { value: "{core.ivy-framework.source.color.black}", type: "color" },
+              foreground: { value: "{core.ivy-framework.source.color.muted-light}", type: "color" },
             },
           },
         },
@@ -121,7 +121,7 @@ describe("Output Values Contract", () => {
       expect(code).toContain('Primary = "#00cc92"');
       expect(code).toContain('Background = "#000000"');
       expect(code).toContain('Foreground = "#f8f8f8"');
-      expect(code).not.toMatch(/\{source\.color\./);
+      expect(code).not.toMatch(/\{core\.(ivy-framework|ivy-web)\.source\.color\./);
     });
 
     it("ensures all token values are valid color formats", async () => {
@@ -137,9 +137,9 @@ describe("Output Values Contract", () => {
         theme: {
           light: {
             color: {
-              primary: { value: "{source.color.primary}", type: "color" },
-              background: { value: "{source.color.white}", type: "color" },
-              foreground: { value: "{source.color.black}", type: "color" },
+              primary: { value: "{core.ivy-framework.source.color.primary}", type: "color" },
+              background: { value: "{core.ivy-framework.source.color.white}", type: "color" },
+              foreground: { value: "{core.ivy-framework.source.color.black}", type: "color" },
             },
           },
         },
@@ -178,7 +178,7 @@ describe("Output Values Contract", () => {
           oklchRegex.test(value);
 
         // Should not be a reference
-        expect(value).not.toMatch(/^\{source\./);
+        expect(value).not.toMatch(/^\{core\.(ivy-framework|ivy-web)\.source\./);
         // Should be a valid color format
         expect(isValidColor).toBe(true);
       }
@@ -202,7 +202,7 @@ describe("Output Values Contract", () => {
         expect(jsContent).toMatch(/var\(--[\w-]+\)/);
         
         // Should NOT contain unresolved references
-        expect(jsContent).not.toMatch(/\{source\.color\./);
+        expect(jsContent).not.toMatch(/\{core\.(ivy-framework|ivy-web)\.source\.color\./);
       } catch (error) {
         // File might not exist if build hasn't run, skip this test
         console.warn("dist/js/index.js not found, skipping JS export test");
@@ -218,7 +218,7 @@ describe("Output Values Contract", () => {
         expect(lightCSS).toMatch(/#[0-9A-Fa-f]{6}/);
         
         // Should NOT contain unresolved references
-        expect(lightCSS).not.toMatch(/\{source\.color\./);
+        expect(lightCSS).not.toMatch(/\{core\.(ivy-framework|ivy-web)\.source\.color\./);
       } catch (error) {
         console.warn("dist/css/light.css not found, skipping CSS test");
       }
@@ -231,8 +231,8 @@ describe("Output Values Contract", () => {
         const tokensContent = await readFile("figma-tokens/$tokens.json", "utf-8");
         const allTokens = JSON.parse(tokensContent);
 
-        const sourceTokens = allTokens.source || {};
-        const lightTheme = { theme: { light: allTokens.theme?.light || {} } };
+        const sourceTokens = allTokens.core?.["ivy-framework"]?.source || {};
+        const lightTheme = { theme: { light: allTokens.core?.["ivy-framework"]?.theme?.light || {} } };
 
         const code = generateCSharpCode(
           lightTheme,
@@ -242,7 +242,7 @@ describe("Output Values Contract", () => {
         );
 
         // Verify no references in the generated code
-        expect(code).not.toMatch(/\{source\.color\./);
+        expect(code).not.toMatch(/\{core\.(ivy-framework|ivy-web)\.source\.color\./);
 
         // Verify actual color codes are present
         expect(code).toMatch(/#[0-9A-Fa-f]{6}/);
@@ -252,7 +252,7 @@ describe("Output Values Contract", () => {
         if (primaryMatch) {
           const primaryValue = primaryMatch[1];
           expect(primaryValue).toMatch(/^#[0-9A-Fa-f]{6}$/);
-          expect(primaryValue).not.toMatch(/^\{source\./);
+          expect(primaryValue).not.toMatch(/^\{core\.(ivy-framework|ivy-web)\.source\./);
         }
       } catch (error) {
         console.warn("Could not test with actual token file:", error);
@@ -272,7 +272,7 @@ describe("Output Values Contract", () => {
         theme: {
           light: {
             color: {
-              primary: { value: "{source.color.primary}", type: "color" },
+              primary: { value: "{core.ivy-framework.source.color.primary}", type: "color" },
             },
           },
         },
@@ -291,7 +291,7 @@ describe("Output Values Contract", () => {
         sourceTokens
       );
 
-      expect(codeWithSource).not.toMatch(/\{source\.color\./);
+      expect(codeWithSource).not.toMatch(/\{core\.(ivy-framework|ivy-web)\.source\.color\./);
       expect(codeWithSource).toContain('Primary = "#00cc92"');
     });
 
@@ -308,8 +308,8 @@ describe("Output Values Contract", () => {
         theme: {
           light: {
             color: {
-              primary: { value: "{source.color.primary}", type: "color" },
-              background: { value: "{source.color.white}", type: "color" },
+              primary: { value: "{core.ivy-framework.source.color.primary}", type: "color" },
+              background: { value: "{core.ivy-framework.source.color.white}", type: "color" },
             },
           },
         },
@@ -319,8 +319,8 @@ describe("Output Values Contract", () => {
         theme: {
           dark: {
             color: {
-              primary: { value: "{source.color.primary}", type: "color" },
-              background: { value: "{source.color.black}", type: "color" },
+              primary: { value: "{core.ivy-framework.source.color.primary}", type: "color" },
+              background: { value: "{core.ivy-framework.source.color.black}", type: "color" },
             },
           },
         },
@@ -347,8 +347,8 @@ describe("Output Values Contract", () => {
       expect(darkCode).toContain('Background = "#000000"');
 
       // Neither should have references
-      expect(lightCode).not.toMatch(/\{source\.color\./);
-      expect(darkCode).not.toMatch(/\{source\.color\./);
+      expect(lightCode).not.toMatch(/\{core\.(ivy-framework|ivy-web)\.source\.color\./);
+      expect(darkCode).not.toMatch(/\{core\.(ivy-framework|ivy-web)\.source\.color\./);
     });
   });
 });

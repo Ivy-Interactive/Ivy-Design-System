@@ -461,15 +461,15 @@ describe("Contract consistency", () => {
         light: {
           color: {
             primary: {
-              value: "{source.color.primary}",
+              value: "{core.ivy-framework.source.color.primary}",
               type: "color",
             },
             background: {
-              value: "{source.color.white}",
+              value: "{core.ivy-framework.source.color.white}",
               type: "color",
             },
             foreground: {
-              value: "{source.color.black}",
+              value: "{core.ivy-framework.source.color.black}",
               type: "color",
             },
           },
@@ -485,9 +485,9 @@ describe("Contract consistency", () => {
     expect(code).toContain('Foreground = "#000000"');
     
     // Should NOT contain references
-    expect(code).not.toContain('{source.color.primary}');
-    expect(code).not.toContain('{source.color.white}');
-    expect(code).not.toContain('{source.color.black}');
+    expect(code).not.toContain('{core.ivy-framework.source.color.primary}');
+    expect(code).not.toContain('{core.ivy-framework.source.color.white}');
+    expect(code).not.toContain('{core.ivy-framework.source.color.black}');
   });
 
   it("ensures GenerateCSS outputs actual color values, not references", () => {
@@ -509,11 +509,11 @@ describe("Contract consistency", () => {
         light: {
           color: {
             primary: {
-              value: "{source.color.primary}",
+              value: "{core.ivy-framework.source.color.primary}",
               type: "color",
             },
             background: {
-              value: "{source.color.white}",
+              value: "{core.ivy-framework.source.color.white}",
               type: "color",
             },
           },
