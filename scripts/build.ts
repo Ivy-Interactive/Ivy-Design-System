@@ -50,14 +50,30 @@ async function build() {
       await readFile("figma-tokens/$tokens.json", "utf-8")
     );
 
-    // Extract product and theme tokens from core.ivy-framework
-    const sourceTokens = allTokens.core?.["ivy-framework"]?.source || {};
-    const lightTheme = { theme: { light: allTokens.core?.["ivy-framework"]?.theme?.light || {} } };
-    const darkTheme = { theme: { dark: allTokens.core?.["ivy-framework"]?.theme?.dark || {} } };
+    // Extract ivy-framework tokens
+    const ivyFramework = allTokens.core?.["ivy-framework"] || {};
+    const ivyFrameworkSource = ivyFramework.source || {};
+    const ivyFrameworkNeutral = ivyFramework.neutral || {};
+    const ivyFrameworkChromatic = ivyFramework.chromatic || {};
+    const ivyFrameworkLightTheme = {
+      theme: { light: ivyFramework.theme?.light || {} },
+    };
+    const ivyFrameworkDarkTheme = {
+      theme: { dark: ivyFramework.theme?.dark || {} },
+    };
 
-    console.log("  ✓ Source tokens loaded");
-    console.log("  ✓ Light theme loaded");
-    console.log("  ✓ Dark theme loaded\n");
+    // Extract ivy-web tokens
+    const ivyWeb = allTokens.core?.["ivy-web"] || {};
+    const ivyWebSource = ivyWeb.source || {};
+    const ivyWebLightTheme = {
+      theme: { light: ivyWeb.theme?.light || {} },
+    };
+    const ivyWebDarkTheme = {
+      theme: { dark: ivyWeb.theme?.dark || {} },
+    };
+
+    console.log("  ✓ Ivy Framework tokens loaded");
+    console.log("  ✓ Ivy Web tokens loaded\n");
 
     // Ensure dist directories exist
     console.log("📁 Creating output directories...");
@@ -68,57 +84,174 @@ async function build() {
     await mkdir("dist/csharp", { recursive: true });
     console.log("  ✓ Directories created\n");
 
-    // Generate CSS
-    console.log("📝 Generating CSS...");
-    await generateCSS(sourceTokens, "dist/css/ivy-framework.css", false, undefined);
-    await generateCSS(lightTheme, "dist/css/light.css", false, sourceTokens);
-    await generateCSS(darkTheme, "dist/css/dark.css", true, sourceTokens);
-
-    // Generate flat CSS for frontend compatibility
-    await generateFlatCSS(
-      sourceTokens,
-      "dist/css/ivy-framework-flat.css",
+    // Generate CSS for ivy-framework
+    console.log("📝 Generating CSS for ivy-framework...");
+    await generateCSS(
+      ivyFrameworkSource,
+      "dist/css/ivy-framework-source.css",
       false,
       undefined
     );
-    await generateFlatCSS(darkTheme, "dist/css/dark-flat.css", true, sourceTokens);
+    await generateCSS(
+      ivyFrameworkNeutral,
+      "dist/css/ivy-framework-neutral.css",
+      false,
+      ivyFrameworkSource
+    );
+    await generateCSS(
+      ivyFrameworkChromatic,
+      "dist/css/ivy-framework-chromatic.css",
+      false,
+      ivyFrameworkSource
+    );
+    await generateCSS(
+      ivyFrameworkLightTheme,
+      "dist/css/ivy-framework-light.css",
+      false,
+      ivyFrameworkSource
+    );
+    await generateCSS(
+      ivyFrameworkDarkTheme,
+      "dist/css/ivy-framework-dark.css",
+      true,
+      ivyFrameworkSource
+    );
+
+    // Generate flat CSS for ivy-framework
+    await generateFlatCSS(
+      ivyFrameworkSource,
+      "dist/css/ivy-framework-source-flat.css",
+      false,
+      undefined
+    );
+    await generateFlatCSS(
+      ivyFrameworkNeutral,
+      "dist/css/ivy-framework-neutral-flat.css",
+      false,
+      ivyFrameworkSource
+    );
+    await generateFlatCSS(
+      ivyFrameworkChromatic,
+      "dist/css/ivy-framework-chromatic-flat.css",
+      false,
+      ivyFrameworkSource
+    );
+    await generateFlatCSS(
+      ivyFrameworkDarkTheme,
+      "dist/css/ivy-framework-dark-flat.css",
+      true,
+      ivyFrameworkSource
+    );
+
+    // Generate CSS for ivy-web
+    console.log("📝 Generating CSS for ivy-web...");
+    await generateCSS(
+      ivyWebSource,
+      "dist/css/ivy-web-source.css",
+      false,
+      undefined
+    );
+    await generateCSS(
+      ivyWebLightTheme,
+      "dist/css/ivy-web-light.css",
+      false,
+      ivyWebSource
+    );
+    await generateCSS(
+      ivyWebDarkTheme,
+      "dist/css/ivy-web-dark.css",
+      true,
+      ivyWebSource
+    );
+
+    // Generate flat CSS for ivy-web
+    await generateFlatCSS(
+      ivyWebSource,
+      "dist/css/ivy-web-source-flat.css",
+      false,
+      undefined
+    );
+    await generateFlatCSS(
+      ivyWebDarkTheme,
+      "dist/css/ivy-web-dark-flat.css",
+      true,
+      ivyWebSource
+    );
     console.log("");
 
     // Generate Tailwind configs
     console.log("🎨 Generating Tailwind configs...");
     await generateTailwind(
-      sourceTokens,
+      ivyFrameworkSource,
       "dist/tailwind/ivy-framework.js"
     );
     console.log("");
 
     // Generate TypeScript types
     console.log("📘 Generating TypeScript types...");
-    await generateTypes(sourceTokens);
+    await generateTypes(ivyFrameworkSource);
     console.log("");
 
-    // Generate C# classes
-    console.log("🔷 Generating C# classes...");
+    // Generate C# classes for ivy-framework
+    console.log("🔷 Generating C# classes for ivy-framework...");
     await generateCSharp(
-      sourceTokens,
-      "dist/csharp/IvyFrameworkTokens.cs",
-      "IvyFrameworkTokens",
+      ivyFrameworkSource,
+      "dist/csharp/IvyFrameworkSourceTokens.cs",
+      "IvyFrameworkSourceTokens",
       "Ivy.Themes",
-      undefined // No source tokens needed for source itself
+      undefined
     );
     await generateCSharp(
-      lightTheme,
-      "dist/csharp/LightThemeTokens.cs",
-      "LightThemeTokens",
+      ivyFrameworkNeutral,
+      "dist/csharp/IvyFrameworkNeutralTokens.cs",
+      "IvyFrameworkNeutralTokens",
       "Ivy.Themes",
-      sourceTokens // Pass source tokens to resolve references
+      ivyFrameworkSource
     );
     await generateCSharp(
-      darkTheme,
-      "dist/csharp/DarkThemeTokens.cs",
-      "DarkThemeTokens",
+      ivyFrameworkChromatic,
+      "dist/csharp/IvyFrameworkChromaticTokens.cs",
+      "IvyFrameworkChromaticTokens",
       "Ivy.Themes",
-      sourceTokens // Pass source tokens to resolve references
+      ivyFrameworkSource
+    );
+    await generateCSharp(
+      ivyFrameworkLightTheme,
+      "dist/csharp/IvyFrameworkLightThemeTokens.cs",
+      "IvyFrameworkLightThemeTokens",
+      "Ivy.Themes",
+      ivyFrameworkSource
+    );
+    await generateCSharp(
+      ivyFrameworkDarkTheme,
+      "dist/csharp/IvyFrameworkDarkThemeTokens.cs",
+      "IvyFrameworkDarkThemeTokens",
+      "Ivy.Themes",
+      ivyFrameworkSource
+    );
+
+    // Generate C# classes for ivy-web
+    console.log("🔷 Generating C# classes for ivy-web...");
+    await generateCSharp(
+      ivyWebSource,
+      "dist/csharp/IvyWebSourceTokens.cs",
+      "IvyWebSourceTokens",
+      "Ivy.Themes",
+      undefined
+    );
+    await generateCSharp(
+      ivyWebLightTheme,
+      "dist/csharp/IvyWebLightThemeTokens.cs",
+      "IvyWebLightThemeTokens",
+      "Ivy.Themes",
+      ivyWebSource
+    );
+    await generateCSharp(
+      ivyWebDarkTheme,
+      "dist/csharp/IvyWebDarkThemeTokens.cs",
+      "IvyWebDarkThemeTokens",
+      "Ivy.Themes",
+      ivyWebSource
     );
     console.log("");
 
