@@ -50,10 +50,10 @@ async function build() {
       await readFile("figma-tokens/$tokens.json", "utf-8")
     );
 
-    // Extract product and theme tokens
-    const sourceTokens = allTokens.source || {};
-    const lightTheme = { theme: { light: allTokens.theme?.light || {} } };
-    const darkTheme = { theme: { dark: allTokens.theme?.dark || {} } };
+    // Extract product and theme tokens from core.ivy-framework
+    const sourceTokens = allTokens.core?.["ivy-framework"]?.source || {};
+    const lightTheme = { theme: { light: allTokens.core?.["ivy-framework"]?.theme?.light || {} } };
+    const darkTheme = { theme: { dark: allTokens.core?.["ivy-framework"]?.theme?.dark || {} } };
 
     console.log("  ✓ Source tokens loaded");
     console.log("  ✓ Light theme loaded");
