@@ -3,7 +3,7 @@ import { generateFlatCSS } from "./generate-flat-css.js";
 import { generateTailwind } from "./generate-tailwind.js";
 import { generateTypes } from "./generate-types.js";
 import { generateCSharp } from "./generate-csharp.js";
-import { readFile, writeFile, mkdir } from "fs/promises";
+import { readFile, writeFile, mkdir, readdir } from "fs/promises";
 
 /**
  * Validates that package.json and .csproj versions are synchronized
@@ -264,9 +264,82 @@ async function build() {
     console.log("  ✓ dist/tokens/index.json");
     console.log("");
 
+    console.log("🔤 Generating fonts CSS...");
+
+    const weightMap: Record<string, number> = {
+      'Thin': 100,
+      'ExtraLight': 200,
+      'Light': 300,
+      'Regular': 400,
+      'Medium': 500,
+      'SemiBold': 600,
+      'Bold': 700,
+      'ExtraBold': 800,
+      'Black': 900,
+    };
+
+    const fontFolders = await readdir('fonts');
+    const fontFamilies: Array<{
+      name: string;
+      folder: string;
+      weights: Array<{ weight: number; file: string }>;
+    }> = [];
+
+    const allowedWeights = [400, 500, 600, 700];
+
+    for (const folder of fontFolders) {
+      const files = await readdir(`fonts/${folder}`);
+      const woff2Files = files.filter(
+        (f: string) => f.endsWith('.woff2') && !f.includes('[') && !f.includes('Italic')
+      );
+
+      const weights = woff2Files
+        .map((file: string) => {
+          const baseName = file.replace('.woff2', '');
+          const parts = baseName.split('-');
+          const weightName = parts[parts.length - 1];
+          
+          if (!weightMap[weightName]) return null;
+          const weight = weightMap[weightName];
+          if (!allowedWeights.includes(weight)) return null;
+          return { weight, file: baseName };
+        })
+        .filter((w: { weight: number; file: string } | null): w is { weight: number; file: string } => w !== null)
+        .sort((a: { weight: number }, b: { weight: number }) => a.weight - b.weight);
+
+      if (weights.length > 0) {
+        const name = folder.replace(/([a-z])([A-Z])/g, '$1 $2');
+        fontFamilies.push({ name, folder, weights });
+      }
+    }
+
+    const fontFaceRules = fontFamilies
+      .map((family) => {
+        const comment = `/* ${family.name} Font Family */`;
+        const rules = family.weights
+          .map(
+            ({ weight, file }) =>
+              `@font-face {
+  font-family: '${family.name}';
+  src: url('../fonts/${family.folder}/${file}.woff2') format('woff2');
+  font-weight: ${weight};
+  font-style: normal;
+  font-display: swap;
+}`
+          )
+          .join('\n\n');
+        return `${comment}\n${rules}`;
+      })
+      .join('\n\n');
+
+    await writeFile('dist/css/fonts.css', fontFaceRules + '\n');
+    console.log("  ✓ dist/css/fonts.css");
+    console.log("");
+
     console.log("✅ Build complete!\n");
     console.log("📦 Package contents:");
     console.log("  • CSS: dist/css/");
+    console.log("  • Fonts: fonts/");
     console.log("  • Tailwind: dist/tailwind/");
     console.log("  • JS/TS: dist/js/");
     console.log("  • C#: dist/csharp/");
