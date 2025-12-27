@@ -31,6 +31,7 @@
     "./csharp/light": "./dist/csharp/LightThemeTokens.cs",
     "./csharp/dark": "./dist/csharp/DarkThemeTokens.cs",
     "./css/fonts": "./dist/css/fonts.css",
+    "./css/fonts.css": "./dist/css/fonts.css",
     "./fonts/*": "./dist/fonts/*"
   },
   "files": [
