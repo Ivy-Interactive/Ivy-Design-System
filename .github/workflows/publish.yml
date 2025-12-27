@@ -118,7 +118,7 @@ jobs:
         id: check_npm_version
         run: |
           EXPECTED_VERSION="${{ steps.extract_version.outputs.VERSION }}"
-          if npm view ivy-design-system@$EXPECTED_VERSION version >/dev/null 2>&1; then
+          if npm view @ivy-interactive/ivy-design-system@$EXPECTED_VERSION version >/dev/null 2>&1; then
             echo "exists=true" >> $GITHUB_OUTPUT
             echo "⚠️  Version $EXPECTED_VERSION already exists on npm"
             echo "💡 Use a different version number (e.g., patch: $EXPECTED_VERSION -> $(echo $EXPECTED_VERSION | awk -F. '{print $1"."$2"."$3+1}'))"
@@ -162,14 +162,14 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### Version: ${{ steps.extract_version.outputs.VERSION }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "✅ **npm**: [ivy-design-system](https://www.npmjs.com/package/ivy-design-system)" >> $GITHUB_STEP_SUMMARY
+          echo "✅ **npm**: [@ivy-interactive/ivy-design-system](https://www.npmjs.com/package/@ivy-interactive/ivy-design-system)" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "✅ **NuGet**: [Ivy.DesignSystem](https://www.nuget.org/packages/Ivy.DesignSystem)" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### Installation" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo '```bash' >> $GITHUB_STEP_SUMMARY
-          echo "npm install ivy-design-system" >> $GITHUB_STEP_SUMMARY
+          echo "npm install @ivy-interactive/ivy-design-system" >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo '```bash' >> $GITHUB_STEP_SUMMARY
