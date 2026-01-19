@@ -1,7 +1,7 @@
 import { writeFile } from "fs/promises";
 
 /**
- * Resolves token references like {core.ivy-framework.source.color.primary} or {core.ivy-web.source.color.primary} to actual values
+ * Resolves token references like {ivy-framework.source.color.primary} or {ivy-web.source.color.primary} to actual values
  */
 function resolveTokenReference(
   value: string,
@@ -9,8 +9,8 @@ function resolveTokenReference(
 ): string {
   if (!sourceTokens) return value;
   
-  // Check if it's a reference format: {core.ivy-framework.source.color.token-name} or {core.ivy-web.source.color.token-name}
-  const referenceMatch = value.match(/^\{core\.(ivy-framework|ivy-web)\.source\.color\.([\w-]+)\}$/);
+  // Check if it's a reference format: {ivy-framework.source.color.token-name} or {ivy-web.source.color.token-name}
+  const referenceMatch = value.match(/^\{(ivy-framework|ivy-web)\.source\.color\.([\w-]+)\}$/);
   if (referenceMatch) {
     const tokenName = referenceMatch[2];
     // Look up in source tokens

@@ -51,7 +51,7 @@ async function build() {
     );
 
     // Extract ivy-framework tokens
-    const ivyFramework = allTokens.core?.["ivy-framework"] || {};
+    const ivyFramework = allTokens["ivy-framework"] || {};
     const ivyFrameworkSource = ivyFramework.source || {};
     const ivyFrameworkNeutral = ivyFramework.neutral || {};
     const ivyFrameworkChromatic = ivyFramework.chromatic || {};
@@ -63,7 +63,7 @@ async function build() {
     };
 
     // Extract ivy-web tokens
-    const ivyWeb = allTokens.core?.["ivy-web"] || {};
+    const ivyWeb = allTokens["ivy-web"] || {};
     const ivyWebSource = ivyWeb.source || {};
     const ivyWebLightTheme = {
       theme: { light: ivyWeb.theme?.light || {} },
