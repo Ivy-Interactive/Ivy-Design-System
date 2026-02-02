@@ -46,7 +46,7 @@ function tokenToCSS(obj: any, prefix = "", sourceTokens?: Record<string, any>): 
     return css;
   }
 
-  const categories = ["color", "sizing", "border-radius"];
+  const categories = ["color", "sizing", "border-radius", "padding"];
   for (const category of categories) {
     if (obj[category]) {
       css += tokenToCSS(obj[category], category, sourceTokens);

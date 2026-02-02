@@ -42,7 +42,7 @@ export function extractTokens(
     return tokens;
   }
 
-  const categories = ["color", "sizing", "border-radius"];
+  const categories = ["color", "sizing", "border-radius", "padding"];
   for (const cat of categories) {
     if (obj[cat]) {
       tokens.push(...extractTokens(obj[cat], "", cat));

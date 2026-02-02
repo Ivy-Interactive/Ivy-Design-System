@@ -125,7 +125,7 @@ function tokenToFlatCSS(
     return css;
   }
 
-  const categories = ["color", "sizing", "border-radius"];
+  const categories = ["color", "sizing", "border-radius", "padding"];
   for (const category of categories) {
     if (obj[category]) {
       css += tokenToFlatCSS(obj[category], category, mapping, sourceTokens);

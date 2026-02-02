@@ -380,6 +380,40 @@
               "value": "{ivy-framework.source.sizing.full}",
               "type": "borderRadius"
             }
+          },
+          "padding": {
+            "none": {
+              "value": "{ivy-framework.source.sizing.0}",
+              "type": "spacing"
+            },
+            "xs": {
+              "value": "{ivy-framework.source.sizing.1}",
+              "type": "spacing"
+            },
+            "sm": {
+              "value": "{ivy-framework.source.sizing.2}",
+              "type": "spacing"
+            },
+            "md": {
+              "value": "{ivy-framework.source.sizing.4}",
+              "type": "spacing"
+            },
+            "lg": {
+              "value": "{ivy-framework.source.sizing.6}",
+              "type": "spacing"
+            },
+            "xl": {
+              "value": "{ivy-framework.source.sizing.8}",
+              "type": "spacing"
+            },
+            "2xl": {
+              "value": "{ivy-framework.source.sizing.12}",
+              "type": "spacing"
+            },
+            "3xl": {
+              "value": "{ivy-framework.source.sizing.16}",
+              "type": "spacing"
+            }
           }
         },
         "dark": {
@@ -517,6 +551,40 @@
             "full": {
               "value": "{ivy-framework.source.sizing.full}",
               "type": "borderRadius"
+            }
+          },
+          "padding": {
+            "none": {
+              "value": "{ivy-framework.source.sizing.0}",
+              "type": "spacing"
+            },
+            "xs": {
+              "value": "{ivy-framework.source.sizing.1}",
+              "type": "spacing"
+            },
+            "sm": {
+              "value": "{ivy-framework.source.sizing.2}",
+              "type": "spacing"
+            },
+            "md": {
+              "value": "{ivy-framework.source.sizing.4}",
+              "type": "spacing"
+            },
+            "lg": {
+              "value": "{ivy-framework.source.sizing.6}",
+              "type": "spacing"
+            },
+            "xl": {
+              "value": "{ivy-framework.source.sizing.8}",
+              "type": "spacing"
+            },
+            "2xl": {
+              "value": "{ivy-framework.source.sizing.12}",
+              "type": "spacing"
+            },
+            "3xl": {
+              "value": "{ivy-framework.source.sizing.16}",
+              "type": "spacing"
             }
           }
         }
