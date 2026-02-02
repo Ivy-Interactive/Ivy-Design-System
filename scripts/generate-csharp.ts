@@ -3,9 +3,11 @@ import { writeFile } from "fs/promises";
 /**
  * Converts a kebab-case token name to PascalCase C# property name
  * Handles numeric names by prefixing with underscore
+ * Replaces dots with underscores for valid C# identifiers
  */
 export function toPascalCase(str: string): string {
   const result = str
+    .replace(/\./g, "_")
     .split("-")
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join("");
