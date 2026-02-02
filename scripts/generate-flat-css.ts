@@ -64,24 +64,31 @@ const THEME_MAPPING: Record<string, string> = {
   "theme-dark-color-card-foreground": "card-foreground",
   "theme-dark-color-popover": "popover",
   "theme-dark-color-popover-foreground": "popover-foreground",
+  "theme-dark-border-radius-none": "radius-none",
+  "theme-dark-border-radius-sm": "radius-sm",
+  "theme-dark-border-radius-md": "radius",
+  "theme-dark-border-radius-lg": "radius-lg",
+  "theme-dark-border-radius-xl": "radius-xl",
+  "theme-dark-border-radius-2xl": "radius-2xl",
+  "theme-dark-border-radius-3xl": "radius-3xl",
+  "theme-dark-border-radius-full": "radius-full",
 };
 
 /**
- * Resolves token references like {ivy-framework.source.color.primary} or {ivy-web.source.color.primary} to actual values
+ * Resolves token references like {ivy-framework.source.color.primary} or {ivy-framework.source.sizing.4} to actual values
  */
 function resolveTokenReference(
   value: string,
   sourceTokens?: Record<string, any>
 ): string {
   if (!sourceTokens) return value;
-  
-  // Check if it's a reference format: {ivy-framework.source.color.token-name} or {ivy-web.source.color.token-name}
-  const referenceMatch = value.match(/^\{(ivy-framework|ivy-web)\.source\.color\.([\w-]+)\}$/);
+
+  const referenceMatch = value.match(/^\{(ivy-framework|ivy-web)\.source\.(color|sizing)\.([\w.-]+)\}$/);
   if (referenceMatch) {
-    const tokenName = referenceMatch[2];
-    // Look up in source tokens
-    if (sourceTokens.color && sourceTokens.color[tokenName]) {
-      const sourceValue = sourceTokens.color[tokenName];
+    const category = referenceMatch[2];
+    const tokenName = referenceMatch[3];
+    if (sourceTokens[category] && sourceTokens[category][tokenName]) {
+      const sourceValue = sourceTokens[category][tokenName];
       if (typeof sourceValue === "object" && sourceValue !== null && "value" in sourceValue) {
         return sourceValue.value as string;
       } else if (typeof sourceValue === "string") {
@@ -89,14 +96,13 @@ function resolveTokenReference(
       }
     }
   }
-  // If not a reference or not found, return as-is
   return value;
 }
 
 /**
  * Converts token objects to flat CSS custom properties using mapping
  * Handles nested token structures recursively
- * Handles both direct color structure and theme structure (theme.dark.color, theme.light.color)
+ * Handles theme structure and multiple token categories
  */
 function tokenToFlatCSS(
   obj: any,
@@ -106,36 +112,37 @@ function tokenToFlatCSS(
 ): string {
   let css = "";
 
-  // Handle theme structure (theme.dark.color or theme.light.color)
   if (obj.theme) {
-    const themeKey = Object.keys(obj.theme)[0]; // 'dark' or 'light'
-    if (obj.theme[themeKey]?.color) {
-      return tokenToFlatCSS(
-        obj.theme[themeKey].color,
-        `theme-${themeKey}-color`,
-        mapping,
-        sourceTokens
-      );
+    const themeKey = Object.keys(obj.theme)[0];
+    const themeObj = obj.theme[themeKey];
+    if (themeObj) {
+      for (const [category, tokens] of Object.entries(themeObj)) {
+        if (typeof tokens === "object" && tokens !== null) {
+          css += tokenToFlatCSS(tokens, `theme-${themeKey}-${category}`, mapping, sourceTokens);
+        }
+      }
+    }
+    return css;
+  }
+
+  const categories = ["color", "sizing", "border-radius"];
+  for (const category of categories) {
+    if (obj[category]) {
+      css += tokenToFlatCSS(obj[category], category, mapping, sourceTokens);
     }
   }
-
-  // Handle direct color structure
-  if (obj.color) {
-    return tokenToFlatCSS(obj.color, "color", mapping, sourceTokens);
+  if (categories.some(c => obj[c])) {
+    return css;
   }
 
-  // Extract tokens from current level
   for (const [key, value] of Object.entries(obj)) {
     if (typeof value === "object" && value !== null) {
-      // Check if this is a token with a value property
       if ("value" in value && "type" in value) {
         const structuredName = prefix ? `${prefix}-${key}` : key;
         const flatName = mapping[structuredName] || key;
         const resolvedValue = resolveTokenReference(value.value as string, sourceTokens);
-
         css += `  --${flatName}: ${resolvedValue};\n`;
       } else if (key !== "theme") {
-        // Recursively process nested objects, skip theme key
         const newPrefix = prefix ? `${prefix}-${key}` : key;
         css += tokenToFlatCSS(value, newPrefix, mapping, sourceTokens);
       }

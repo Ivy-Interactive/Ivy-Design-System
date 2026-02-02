@@ -1,0 +1,244 @@
+{
+  "ivy-framework": {
+    "source": {
+      "color": {
+        "primary": {
+          "value": "#00cc92",
+          "type": "color"
+        },
+        "black": {
+          "value": "#000000",
+          "type": "color"
+        },
+        "white": {
+          "value": "#ffffff",
+          "type": "color"
+        },
+        "secondary-light": {
+          "value": "#dfe7e3",
+          "type": "color"
+        },
+        "secondary-dark": {
+          "value": "#26262b",
+          "type": "color"
+        },
+        "destructive": {
+          "value": "#dd5860",
+          "type": "color"
+        }
+      },
+      "sizing": {
+        "0": {
+          "value": "0rem",
+          "type": "sizing"
+        },
+        "1": {
+          "value": "0.25rem",
+          "type": "sizing"
+        },
+        "2": {
+          "value": "0.5rem",
+          "type": "sizing"
+        },
+        "3": {
+          "value": "0.75rem",
+          "type": "sizing"
+        },
+        "4": {
+          "value": "1rem",
+          "type": "sizing"
+        },
+        "6": {
+          "value": "1.5rem",
+          "type": "sizing"
+        },
+        "8": {
+          "value": "2rem",
+          "type": "sizing"
+        },
+        "full": {
+          "value": "9999px",
+          "type": "sizing"
+        }
+      }
+    },
+    "theme": {
+      "light": {
+        "color": {
+          "primary": {
+            "value": "{ivy-framework.source.color.primary}",
+            "type": "color"
+          },
+          "primary-foreground": {
+            "value": "{ivy-framework.source.color.black}",
+            "type": "color"
+          },
+          "secondary": {
+            "value": "{ivy-framework.source.color.secondary-light}",
+            "type": "color"
+          },
+          "background": {
+            "value": "{ivy-framework.source.color.white}",
+            "type": "color"
+          },
+          "foreground": {
+            "value": "{ivy-framework.source.color.black}",
+            "type": "color"
+          }
+        },
+        "border-radius": {
+          "none": {
+            "value": "{ivy-framework.source.sizing.0}",
+            "type": "borderRadius"
+          },
+          "sm": {
+            "value": "{ivy-framework.source.sizing.1}",
+            "type": "borderRadius"
+          },
+          "md": {
+            "value": "{ivy-framework.source.sizing.2}",
+            "type": "borderRadius"
+          },
+          "lg": {
+            "value": "{ivy-framework.source.sizing.3}",
+            "type": "borderRadius"
+          },
+          "full": {
+            "value": "{ivy-framework.source.sizing.full}",
+            "type": "borderRadius"
+          }
+        }
+      },
+      "dark": {
+        "color": {
+          "primary": {
+            "value": "{ivy-framework.source.color.primary}",
+            "type": "color"
+          },
+          "primary-foreground": {
+            "value": "{ivy-framework.source.color.black}",
+            "type": "color"
+          },
+          "secondary": {
+            "value": "{ivy-framework.source.color.secondary-dark}",
+            "type": "color"
+          },
+          "background": {
+            "value": "{ivy-framework.source.color.black}",
+            "type": "color"
+          },
+          "foreground": {
+            "value": "{ivy-framework.source.color.white}",
+            "type": "color"
+          }
+        },
+        "border-radius": {
+          "none": {
+            "value": "{ivy-framework.source.sizing.0}",
+            "type": "borderRadius"
+          },
+          "sm": {
+            "value": "{ivy-framework.source.sizing.1}",
+            "type": "borderRadius"
+          },
+          "md": {
+            "value": "{ivy-framework.source.sizing.2}",
+            "type": "borderRadius"
+          },
+          "lg": {
+            "value": "{ivy-framework.source.sizing.3}",
+            "type": "borderRadius"
+          },
+          "full": {
+            "value": "{ivy-framework.source.sizing.full}",
+            "type": "borderRadius"
+          }
+        }
+      }
+    },
+    "neutral": {
+      "color": {
+        "slate": {
+          "value": "{ivy-framework.source.color.black}",
+          "type": "color"
+        },
+        "slate-foreground": {
+          "value": "{ivy-framework.source.color.white}",
+          "type": "color"
+        }
+      }
+    },
+    "chromatic": {
+      "color": {
+        "red": {
+          "value": "{ivy-framework.source.color.destructive}",
+          "type": "color"
+        },
+        "red-foreground": {
+          "value": "{ivy-framework.source.color.black}",
+          "type": "color"
+        }
+      }
+    }
+  },
+  "ivy-web": {
+    "source": {
+      "color": {
+        "custom-teal-500": {
+          "value": "#00d18e",
+          "type": "color"
+        },
+        "custom-teal-600": {
+          "value": "#00cc92",
+          "type": "color"
+        },
+        "gray-0": {
+          "value": "#ffffff",
+          "type": "color"
+        },
+        "gray-700": {
+          "value": "#202221",
+          "type": "color"
+        }
+      }
+    },
+    "theme": {
+      "light": {
+        "color": {
+          "primary": {
+            "value": "{ivy-web.source.color.custom-teal-600}",
+            "type": "color"
+          },
+          "surface-primary": {
+            "value": "{ivy-web.source.color.gray-0}",
+            "type": "color"
+          },
+          "text-primary": {
+            "value": "{ivy-web.source.color.gray-700}",
+            "type": "color"
+          }
+        }
+      },
+      "dark": {
+        "color": {
+          "primary": {
+            "value": "{ivy-web.source.color.custom-teal-600}",
+            "type": "color"
+          },
+          "surface-primary": {
+            "value": "{ivy-web.source.color.gray-700}",
+            "type": "color"
+          },
+          "text-primary": {
+            "value": "{ivy-web.source.color.gray-0}",
+            "type": "color"
+          }
+        }
+      }
+    }
+  },
+  "$themes": [],
+  "$metadata": {
+    "tokenSetOrder": ["ivy-framework", "ivy-web"]
+  }
+}

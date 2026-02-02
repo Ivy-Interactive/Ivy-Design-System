@@ -49,11 +49,13 @@ describe("extractTokens", () => {
       name: "primary",
       value: "#00cc92",
       propertyName: "Primary",
+      category: "color",
     });
     expect(result[1]).toEqual({
       name: "black",
       value: "#000000",
       propertyName: "Black",
+      category: "color",
     });
   });
 
@@ -81,11 +83,13 @@ describe("extractTokens", () => {
       name: "primary",
       value: "{source.color.primary}",
       propertyName: "Primary",
+      category: "color",
     });
     expect(result[1]).toEqual({
       name: "background",
       value: "{source.color.white}",
       propertyName: "Background",
+      category: "color",
     });
   });
 
@@ -264,8 +268,7 @@ describe("generateCSharpCode", () => {
 
     const code = generateCSharpCode(tokens);
     expect(code).toContain("public static string[] GetAllTokenNames");
-    // Token name includes prefix when extracted from nested structure
-    expect(code).toMatch(/"source-primary"/);
+    expect(code).toMatch(/"primary"/);
   });
 
   it("includes GetAllTokens method", () => {
@@ -362,8 +365,7 @@ describe("generateCSharpCode", () => {
     };
 
     const code = generateCSharpCode(tokens);
-    // Token name includes prefix when extracted from nested structure
-    expect(code).toContain("/// <summary>source-primary</summary>");
+    expect(code).toContain("/// <summary>primary</summary>");
     expect(code).toContain("/// <summary>");
     expect(code).toContain("Design tokens for color");
   });
@@ -478,12 +480,12 @@ describe("Contract consistency", () => {
     };
 
     const code = generateCSharpCode(themeTokens, "LightThemeTokens", "Ivy.Themes", sourceTokens);
-    
+
     // References should be resolved to actual color values
     expect(code).toContain('Primary = "#00cc92"');
     expect(code).toContain('Background = "#ffffff"');
     expect(code).toContain('Foreground = "#000000"');
-    
+
     // Should NOT contain references
     expect(code).not.toContain('{ivy-framework.source.color.primary}');
     expect(code).not.toContain('{ivy-framework.source.color.white}');
@@ -522,15 +524,15 @@ describe("Contract consistency", () => {
     };
 
     const code = generateCSharpCode(themeTokens, "LightThemeTokens", "Ivy.Themes", sourceTokens);
-    
+
     // Verify the static properties contain actual values
     expect(code).toContain('public static readonly string Primary = "#00cc92"');
     expect(code).toContain('public static readonly string Background = "#ffffff"');
-    
+
     // Verify GenerateCSS method will output actual values (it reads from these properties)
     expect(code).toContain("GenerateCSS");
     expect(code).toContain("field.GetValue(null)");
-    
+
     // The generated CSS will use the resolved values from the properties
     // Since Primary = "#00cc92", GenerateCSS will output --primary: #00cc92;
   });

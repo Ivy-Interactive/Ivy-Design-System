@@ -1,21 +1,20 @@
 import { writeFile } from "fs/promises";
 
 /**
- * Resolves token references like {ivy-framework.source.color.primary} or {ivy-web.source.color.primary} to actual values
+ * Resolves token references like {ivy-framework.source.color.primary} or {ivy-framework.source.sizing.4} to actual values
  */
 function resolveTokenReference(
   value: string,
   sourceTokens?: Record<string, any>
 ): string {
   if (!sourceTokens) return value;
-  
-  // Check if it's a reference format: {ivy-framework.source.color.token-name} or {ivy-web.source.color.token-name}
-  const referenceMatch = value.match(/^\{(ivy-framework|ivy-web)\.source\.color\.([\w-]+)\}$/);
+
+  const referenceMatch = value.match(/^\{(ivy-framework|ivy-web)\.source\.(color|sizing)\.([\w.-]+)\}$/);
   if (referenceMatch) {
-    const tokenName = referenceMatch[2];
-    // Look up in source tokens
-    if (sourceTokens.color && sourceTokens.color[tokenName]) {
-      const sourceValue = sourceTokens.color[tokenName];
+    const category = referenceMatch[2];
+    const tokenName = referenceMatch[3];
+    if (sourceTokens[category] && sourceTokens[category][tokenName]) {
+      const sourceValue = sourceTokens[category][tokenName];
       if (typeof sourceValue === "object" && sourceValue !== null && "value" in sourceValue) {
         return sourceValue.value as string;
       } else if (typeof sourceValue === "string") {
@@ -23,45 +22,47 @@ function resolveTokenReference(
       }
     }
   }
-  // If not a reference or not found, return as-is
   return value;
 }
 
 /**
  * Converts token objects to CSS custom properties
  * Handles nested token structures recursively
- * Handles both direct color structure and theme structure (theme.dark.color, theme.light.color)
+ * Handles theme structure (theme.dark/light) and source structure (color, sizing)
  */
 function tokenToCSS(obj: any, prefix = "", sourceTokens?: Record<string, any>): string {
   let css = "";
 
-  // Handle theme structure (theme.dark.color or theme.light.color)
   if (obj.theme) {
-    const themeKey = Object.keys(obj.theme)[0]; // 'dark' or 'light'
-    if (obj.theme[themeKey]?.color) {
-      return tokenToCSS(
-        obj.theme[themeKey].color,
-        prefix ? `${prefix}-color` : "color",
-        sourceTokens
-      );
+    const themeKey = Object.keys(obj.theme)[0];
+    const themeObj = obj.theme[themeKey];
+    if (themeObj) {
+      for (const [category, tokens] of Object.entries(themeObj)) {
+        if (typeof tokens === "object" && tokens !== null) {
+          css += tokenToCSS(tokens, category, sourceTokens);
+        }
+      }
+    }
+    return css;
+  }
+
+  const categories = ["color", "sizing", "border-radius"];
+  for (const category of categories) {
+    if (obj[category]) {
+      css += tokenToCSS(obj[category], category, sourceTokens);
     }
   }
-
-  // Handle direct color structure
-  if (obj.color) {
-    return tokenToCSS(obj.color, prefix ? `${prefix}-color` : "color", sourceTokens);
+  if (categories.some(c => obj[c])) {
+    return css;
   }
 
-  // Extract tokens from current level
   for (const [key, value] of Object.entries(obj)) {
     if (typeof value === "object" && value !== null) {
-      // Check if this is a token with a value property
       if ("value" in value && "type" in value) {
         const varName = prefix ? `${prefix}-${key}` : key;
         const resolvedValue = resolveTokenReference(value.value as string, sourceTokens);
         css += `  --${varName}: ${resolvedValue};\n`;
       } else if (key !== "theme") {
-        // Recursively process nested objects, skip theme key
         const newPrefix = prefix ? `${prefix}-${key}` : key;
         css += tokenToCSS(value, newPrefix, sourceTokens);
       }

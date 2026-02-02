@@ -2,57 +2,68 @@ import { writeFile } from "fs/promises";
 
 /**
  * Converts a kebab-case token name to PascalCase C# property name
- * Examples:
- *   color-brand-primary -> ColorBrandPrimary
- *   color-semantic-text-primary -> ColorSemanticTextPrimary
+ * Handles numeric names by prefixing with underscore
  */
 export function toPascalCase(str: string): string {
-  return str
+  const result = str
     .split("-")
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join("");
+  if (/^\d/.test(result)) {
+    return "_" + result;
+  }
+  return result;
 }
 
 /**
- * Extracts all tokens with their names and values from nested structure
- * Handles both direct color structure and theme structure (theme.dark.color, theme.light.color)
+ * Extracts all tokens with their names, values, and category from nested structure
+ * Handles theme structure (theme.dark/light) and multiple token categories
  */
 export function extractTokens(
   obj: any,
-  prefix = ""
-): Array<{ name: string; value: string; propertyName: string }> {
-  const tokens: Array<{ name: string; value: string; propertyName: string }> =
+  prefix = "",
+  category = "color"
+): Array<{ name: string; value: string; propertyName: string; category: string }> {
+  const tokens: Array<{ name: string; value: string; propertyName: string; category: string }> =
     [];
 
-  // Handle theme structure (theme.dark.color or theme.light.color)
   if (obj.theme) {
-    const themeKey = Object.keys(obj.theme)[0]; // 'dark' or 'light'
-    if (obj.theme[themeKey]?.color) {
-      return extractTokens(obj.theme[themeKey].color, prefix);
+    const themeKey = Object.keys(obj.theme)[0];
+    const themeObj = obj.theme[themeKey];
+    if (themeObj) {
+      for (const [cat, catTokens] of Object.entries(themeObj)) {
+        if (typeof catTokens === "object" && catTokens !== null) {
+          tokens.push(...extractTokens(catTokens, "", cat));
+        }
+      }
+    }
+    return tokens;
+  }
+
+  const categories = ["color", "sizing", "border-radius"];
+  for (const cat of categories) {
+    if (obj[cat]) {
+      tokens.push(...extractTokens(obj[cat], "", cat));
     }
   }
-
-  // Handle direct color structure
-  if (obj.color) {
-    return extractTokens(obj.color, prefix);
+  if (categories.some(c => obj[c])) {
+    return tokens;
   }
 
-  // Extract tokens from current level
   for (const [key, value] of Object.entries(obj)) {
     if (typeof value === "object" && value !== null) {
       if ("value" in value && "type" in value) {
         const varName = prefix ? `${prefix}-${key}` : key;
-        // For simplified naming, just use the key directly (e.g., 'primary' -> 'Primary')
         const propertyName = toPascalCase(key);
         tokens.push({
           name: varName,
           value: value.value as string,
           propertyName,
+          category,
         });
       } else if (key !== "theme") {
-        // Skip theme key, process other nested objects
         const newPrefix = prefix ? `${prefix}-${key}` : key;
-        tokens.push(...extractTokens(value, newPrefix));
+        tokens.push(...extractTokens(value, newPrefix, category));
       }
     }
   }
@@ -61,19 +72,18 @@ export function extractTokens(
 }
 
 /**
- * Resolves token references like {ivy-framework.source.color.primary} or {ivy-web.source.color.primary} to actual values
+ * Resolves token references like {ivy-framework.source.color.primary} or {ivy-framework.source.sizing.4} to actual values
  */
 function resolveTokenReference(
   value: string,
   sourceTokens: Record<string, any>
 ): string {
-  // Check if it's a reference format: {ivy-framework.source.color.token-name} or {ivy-web.source.color.token-name}
-  const referenceMatch = value.match(/^\{(ivy-framework|ivy-web)\.source\.color\.([\w-]+)\}$/);
+  const referenceMatch = value.match(/^\{(ivy-framework|ivy-web)\.source\.(color|sizing)\.([\w.-]+)\}$/);
   if (referenceMatch) {
-    const tokenName = referenceMatch[2];
-    // Look up in source tokens - sourceTokens is the source object with color property
-    if (sourceTokens && sourceTokens.color && sourceTokens.color[tokenName]) {
-      const sourceValue = sourceTokens.color[tokenName];
+    const category = referenceMatch[2];
+    const tokenName = referenceMatch[3];
+    if (sourceTokens && sourceTokens[category] && sourceTokens[category][tokenName]) {
+      const sourceValue = sourceTokens[category][tokenName];
       if (
         typeof sourceValue === "object" &&
         sourceValue !== null &&
@@ -84,20 +94,28 @@ function resolveTokenReference(
         return sourceValue;
       }
     }
-    // If not found, return as-is (will be a reference string)
   }
-  // If not a reference or not found, return as-is
   return value;
 }
 
 /**
- * Groups tokens by category - for simplified structure, all tokens are under 'color'
+ * Groups tokens by category
  */
 export function groupTokensByCategory(
-  tokens: Array<{ name: string; value: string; propertyName: string }>
+  tokens: Array<{ name: string; value: string; propertyName: string; category?: string }>
 ) {
-  // All tokens are color tokens in the simplified structure
-  return { color: tokens };
+  const grouped: Record<string, Array<{ name: string; value: string; propertyName: string }>> = {};
+  for (const token of tokens) {
+    const cat = token.category || "color";
+    if (!grouped[cat]) {
+      grouped[cat] = [];
+    }
+    grouped[cat].push({ name: token.name, value: token.value, propertyName: token.propertyName });
+  }
+  if (Object.keys(grouped).length === 0) {
+    return { color: [] };
+  }
+  return grouped;
 }
 
 /**
@@ -192,9 +210,9 @@ ${nestedClasses}
             var css = new System.Text.StringBuilder();
             css.AppendLine($"{selector} {{");
 ${categoryNames
-  .map(
-    (cat) =>
-      `
+      .map(
+        (cat) =>
+          `
             // ${cat} tokens
             foreach (var field in typeof(${cat}).GetFields(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static))
             {
@@ -205,8 +223,8 @@ ${categoryNames
                     css.AppendLine($"  --{name}: {value};");
                 }
             }`
-  )
-  .join("")}
+      )
+      .join("")}
 
             css.AppendLine("}");
             return css.ToString();
@@ -252,9 +270,9 @@ ${extractedTokens.map((t) => `                "${t.name}"`).join(",\n")}
         {
             var tokens = new System.Collections.Generic.Dictionary<string, string>();
 ${categoryNames
-  .map(
-    (cat) =>
-      `
+      .map(
+        (cat) =>
+          `
             // ${cat} tokens
             foreach (var field in typeof(${cat}).GetFields(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static))
             {
@@ -265,8 +283,8 @@ ${categoryNames
                     if (value != null) tokens[name] = value;
                 }
             }`
-  )
-  .join("")}
+      )
+      .join("")}
 
             return tokens;
         }

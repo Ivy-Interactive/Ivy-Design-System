@@ -5,6 +5,66 @@ import { generateTypes } from "./generate-types.js";
 import { generateCSharp } from "./generate-csharp.js";
 import { readFile, writeFile, mkdir, readdir, cp } from "fs/promises";
 
+interface TokenValue {
+  value: string;
+  type: string;
+}
+
+interface ColorTokens {
+  [key: string]: TokenValue;
+}
+
+interface ThemeColors {
+  color: ColorTokens;
+}
+
+interface Theme {
+  light?: ThemeColors;
+  dark?: ThemeColors;
+}
+
+interface PackageTokens {
+  source?: {
+    color?: ColorTokens;
+  };
+  theme?: Theme;
+  neutral?: {
+    color?: ColorTokens;
+  };
+  chromatic?: {
+    color?: ColorTokens;
+  };
+}
+
+interface NormalizedTokens {
+  "ivy-framework"?: PackageTokens;
+  "ivy-web"?: PackageTokens;
+}
+
+function normalizeTokens(rawTokens: any): NormalizedTokens {
+  const result: NormalizedTokens = {};
+
+  if (rawTokens["ivy-framework"]) {
+    const ivyFramework = rawTokens["ivy-framework"];
+    if (ivyFramework.source && ivyFramework.theme) {
+      result["ivy-framework"] = ivyFramework;
+    } else if (ivyFramework["ivy-framework"]) {
+      result["ivy-framework"] = ivyFramework["ivy-framework"];
+    }
+  }
+
+  if (rawTokens["ivy-web"]) {
+    const ivyWeb = rawTokens["ivy-web"];
+    if (ivyWeb.source && ivyWeb.theme) {
+      result["ivy-web"] = ivyWeb;
+    } else if (rawTokens["ivy-framework"]?.["ivy-web"]) {
+      result["ivy-web"] = rawTokens["ivy-framework"]["ivy-web"];
+    }
+  }
+
+  return result;
+}
+
 /**
  * Validates that package.json and .csproj versions are synchronized
  */
@@ -44,13 +104,13 @@ async function build() {
     // Validate version synchronization
     await validateVersions();
 
-    // Load tokens from single source of truth
     console.log("📖 Loading tokens...");
-    const allTokens = JSON.parse(
+    const rawTokens = JSON.parse(
       await readFile("figma-tokens/$tokens.json", "utf-8")
     );
 
-    // Extract ivy-framework tokens
+    const allTokens = normalizeTokens(rawTokens);
+
     const ivyFramework = allTokens["ivy-framework"] || {};
     const ivyFrameworkSource = ivyFramework.source || {};
     const ivyFrameworkNeutral = ivyFramework.neutral || {};
@@ -62,7 +122,6 @@ async function build() {
       theme: { dark: ivyFramework.theme?.dark || {} },
     };
 
-    // Extract ivy-web tokens
     const ivyWeb = allTokens["ivy-web"] || {};
     const ivyWebSource = ivyWeb.source || {};
     const ivyWebLightTheme = {

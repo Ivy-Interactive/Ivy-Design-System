@@ -194,13 +194,13 @@ describe("Output Values Contract", () => {
       // Check that the generated JS file exists and has correct format
       try {
         const jsContent = await readFile("dist/js/index.js", "utf-8");
-        
+
         // Should export tokens object
         expect(jsContent).toContain("export const tokens");
-        
+
         // Values should be CSS variable format (var(--token-name))
         expect(jsContent).toMatch(/var\(--[\w-]+\)/);
-        
+
         // Should NOT contain unresolved references
         expect(jsContent).not.toMatch(/\{(ivy-framework|ivy-web)\.source\.color\./);
       } catch (error) {
@@ -213,10 +213,10 @@ describe("Output Values Contract", () => {
       // CSS files should contain actual color codes, not references
       try {
         const lightCSS = await readFile("dist/css/light.css", "utf-8");
-        
+
         // Should contain actual color codes
         expect(lightCSS).toMatch(/#[0-9A-Fa-f]{6}/);
-        
+
         // Should NOT contain unresolved references
         expect(lightCSS).not.toMatch(/\{(ivy-framework|ivy-web)\.source\.color\./);
       } catch (error) {
@@ -226,10 +226,30 @@ describe("Output Values Contract", () => {
   });
 
   describe("End-to-End: Real Token File", () => {
+    function normalizeTokens(rawTokens: any) {
+      const result: any = {};
+      if (rawTokens["ivy-framework"]) {
+        const ivyFramework = rawTokens["ivy-framework"];
+        if (ivyFramework.source && ivyFramework.theme) {
+          result["ivy-framework"] = ivyFramework;
+        } else if (ivyFramework["ivy-framework"]) {
+          result["ivy-framework"] = ivyFramework["ivy-framework"];
+        }
+      }
+      if (rawTokens["ivy-web"]) {
+        const ivyWeb = rawTokens["ivy-web"];
+        if (ivyWeb.source && ivyWeb.theme) {
+          result["ivy-web"] = ivyWeb;
+        }
+      }
+      return result;
+    }
+
     it("verifies actual token file generates outputs with raw values", async () => {
       try {
         const tokensContent = await readFile("figma-tokens/$tokens.json", "utf-8");
-        const allTokens = JSON.parse(tokensContent);
+        const rawTokens = JSON.parse(tokensContent);
+        const allTokens = normalizeTokens(rawTokens);
 
         const sourceTokens = allTokens["ivy-framework"]?.source || {};
         const lightTheme = { theme: { light: allTokens["ivy-framework"]?.theme?.light || {} } };
@@ -241,13 +261,9 @@ describe("Output Values Contract", () => {
           sourceTokens
         );
 
-        // Verify no references in the generated code
         expect(code).not.toMatch(/\{(ivy-framework|ivy-web)\.source\.color\./);
-
-        // Verify actual color codes are present
         expect(code).toMatch(/#[0-9A-Fa-f]{6}/);
 
-        // Extract a sample of values to verify they're actual colors
         const primaryMatch = code.match(/Primary\s*=\s*"([^"]+)"/);
         if (primaryMatch) {
           const primaryValue = primaryMatch[1];
