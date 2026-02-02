@@ -85,46 +85,6 @@
             "value": "{ivy-framework.source.color.black}",
             "type": "color"
           }
-        },
-        "border-radius": {
-          "none": {
-            "value": "{ivy-framework.source.sizing.0}",
-            "type": "borderRadius"
-          },
-          "sm": {
-            "value": "{ivy-framework.source.sizing.1}",
-            "type": "borderRadius"
-          },
-          "md": {
-            "value": "{ivy-framework.source.sizing.2}",
-            "type": "borderRadius"
-          },
-          "lg": {
-            "value": "{ivy-framework.source.sizing.3}",
-            "type": "borderRadius"
-          },
-          "full": {
-            "value": "{ivy-framework.source.sizing.full}",
-            "type": "borderRadius"
-          }
-        },
-        "padding": {
-          "none": {
-            "value": "{ivy-framework.source.sizing.0}",
-            "type": "spacing"
-          },
-          "sm": {
-            "value": "{ivy-framework.source.sizing.2}",
-            "type": "spacing"
-          },
-          "md": {
-            "value": "{ivy-framework.source.sizing.4}",
-            "type": "spacing"
-          },
-          "lg": {
-            "value": "{ivy-framework.source.sizing.6}",
-            "type": "spacing"
-          }
         }
       },
       "dark": {
@@ -148,46 +108,6 @@
           "foreground": {
             "value": "{ivy-framework.source.color.white}",
             "type": "color"
-          }
-        },
-        "border-radius": {
-          "none": {
-            "value": "{ivy-framework.source.sizing.0}",
-            "type": "borderRadius"
-          },
-          "sm": {
-            "value": "{ivy-framework.source.sizing.1}",
-            "type": "borderRadius"
-          },
-          "md": {
-            "value": "{ivy-framework.source.sizing.2}",
-            "type": "borderRadius"
-          },
-          "lg": {
-            "value": "{ivy-framework.source.sizing.3}",
-            "type": "borderRadius"
-          },
-          "full": {
-            "value": "{ivy-framework.source.sizing.full}",
-            "type": "borderRadius"
-          }
-        },
-        "padding": {
-          "none": {
-            "value": "{ivy-framework.source.sizing.0}",
-            "type": "spacing"
-          },
-          "sm": {
-            "value": "{ivy-framework.source.sizing.2}",
-            "type": "spacing"
-          },
-          "md": {
-            "value": "{ivy-framework.source.sizing.4}",
-            "type": "spacing"
-          },
-          "lg": {
-            "value": "{ivy-framework.source.sizing.6}",
-            "type": "spacing"
           }
         }
       }
@@ -213,6 +133,50 @@
         "red-foreground": {
           "value": "{ivy-framework.source.color.black}",
           "type": "color"
+        }
+      }
+    },
+    "border-radius": {
+      "border-radius": {
+        "none": {
+          "value": "{ivy-framework.source.sizing.0}",
+          "type": "borderRadius"
+        },
+        "sm": {
+          "value": "{ivy-framework.source.sizing.1}",
+          "type": "borderRadius"
+        },
+        "md": {
+          "value": "{ivy-framework.source.sizing.2}",
+          "type": "borderRadius"
+        },
+        "lg": {
+          "value": "{ivy-framework.source.sizing.3}",
+          "type": "borderRadius"
+        },
+        "full": {
+          "value": "{ivy-framework.source.sizing.full}",
+          "type": "borderRadius"
+        }
+      }
+    },
+    "padding": {
+      "padding": {
+        "none": {
+          "value": "{ivy-framework.source.sizing.0}",
+          "type": "spacing"
+        },
+        "sm": {
+          "value": "{ivy-framework.source.sizing.2}",
+          "type": "spacing"
+        },
+        "md": {
+          "value": "{ivy-framework.source.sizing.4}",
+          "type": "spacing"
+        },
+        "lg": {
+          "value": "{ivy-framework.source.sizing.6}",
+          "type": "spacing"
         }
       }
     }
