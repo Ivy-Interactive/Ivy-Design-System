@@ -15,6 +15,7 @@ jobs:
     permissions:
       contents: write
       packages: write
+      id-token: write
 
     steps:
       - name: Checkout repository
@@ -110,9 +111,7 @@ jobs:
 
       - name: Publish to npm
         if: steps.check_npm_version.outputs.exists != 'true'
-        run: npm publish --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm publish --provenance --access public
 
       - name: Fail if version exists
         if: steps.check_npm_version.outputs.exists == 'true'
