@@ -15,6 +15,16 @@
     },
     "./css/ivy-framework": "./dist/css/ivy-framework.css",
     "./css/ivy-framework-flat": "./dist/css/ivy-framework-flat.css",
+    "./css/ivy-framework-source": "./dist/css/ivy-framework-source.css",
+    "./css/ivy-framework-source.css": "./dist/css/ivy-framework-source.css",
+    "./css/ivy-framework-light": "./dist/css/ivy-framework-light.css",
+    "./css/ivy-framework-light.css": "./dist/css/ivy-framework-light.css",
+    "./css/ivy-framework-dark": "./dist/css/ivy-framework-dark.css",
+    "./css/ivy-framework-dark.css": "./dist/css/ivy-framework-dark.css",
+    "./css/ivy-framework-chromatic": "./dist/css/ivy-framework-chromatic.css",
+    "./css/ivy-framework-chromatic.css": "./dist/css/ivy-framework-chromatic.css",
+    "./css/ivy-framework-neutral": "./dist/css/ivy-framework-neutral.css",
+    "./css/ivy-framework-neutral.css": "./dist/css/ivy-framework-neutral.css",
     "./css/ivy-web": "./dist/css/ivy-web-light.css",
     "./css/ivy-web-light": "./dist/css/ivy-web-light.css",
     "./css/ivy-web-dark": "./dist/css/ivy-web-dark.css",
@@ -47,7 +57,9 @@
     "prepublishOnly": "npm run clean && npm run build",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:ui": "vitest --ui"
+    "test:ui": "vitest --ui",
+    "demo": "npm run build && cd demo && npm install && npm run dev",
+    "demo:dev": "cd demo && npm run dev"
   },
   "keywords": [
     "design-tokens",
