@@ -219,6 +219,72 @@ function createExamples(): HTMLElement {
         <div class="example-muted-footer">View all activity</div>
       </div>
 
+      <div class="example-card example-card-wide">
+        <h3 class="example-card-title">Badges</h3>
+        <p class="example-card-description">All available badge color variants.</p>
+        <div class="example-badge-grid">
+          <span class="example-badge example-badge-primary">Primary</span>
+          <span class="example-badge example-badge-secondary">Secondary</span>
+          <span class="example-badge example-badge-destructive">Destructive</span>
+          <span class="example-badge example-badge-success">Success</span>
+          <span class="example-badge example-badge-warning">Warning</span>
+          <span class="example-badge example-badge-info">Info</span>
+          <span class="example-badge example-badge-accent">Accent</span>
+          <span class="example-badge example-badge-muted">Muted</span>
+          <span class="example-badge example-badge-outline">Outline</span>
+        </div>
+      </div>
+
+      <div class="example-card">
+        <h3 class="example-card-title">System Health</h3>
+        <p class="example-card-description">Service status breakdown.</p>
+        <div class="example-donut-container">
+          <svg class="example-donut" viewBox="0 0 36 36">
+            <circle class="example-donut-ring" cx="18" cy="18" r="15.915" fill="none" stroke-width="3" stroke="var(--color-muted)"></circle>
+            <circle class="example-donut-segment" cx="18" cy="18" r="15.915" fill="none" stroke-width="3" stroke="var(--color-success)" stroke-dasharray="60 40" stroke-dashoffset="25"></circle>
+            <circle class="example-donut-segment" cx="18" cy="18" r="15.915" fill="none" stroke-width="3" stroke="var(--color-warning)" stroke-dasharray="20 80" stroke-dashoffset="65"></circle>
+            <circle class="example-donut-segment" cx="18" cy="18" r="15.915" fill="none" stroke-width="3" stroke="var(--color-destructive)" stroke-dasharray="10 90" stroke-dashoffset="85"></circle>
+            <circle class="example-donut-segment" cx="18" cy="18" r="15.915" fill="none" stroke-width="3" stroke="var(--color-info)" stroke-dasharray="10 90" stroke-dashoffset="95"></circle>
+          </svg>
+        </div>
+        <div class="example-legend">
+          <span class="example-legend-item"><span class="example-legend-dot" style="background:var(--color-success)"></span>Healthy 60%</span>
+          <span class="example-legend-item"><span class="example-legend-dot" style="background:var(--color-warning)"></span>Degraded 20%</span>
+          <span class="example-legend-item"><span class="example-legend-dot" style="background:var(--color-destructive)"></span>Down 10%</span>
+          <span class="example-legend-item"><span class="example-legend-dot" style="background:var(--color-info)"></span>Maintenance 10%</span>
+        </div>
+      </div>
+
+      <div class="example-card">
+        <h3 class="example-card-title">Metrics</h3>
+        <p class="example-card-description">Key performance indicators.</p>
+        <div class="example-stat">
+          <span class="example-stat-label">Uptime</span>
+          <div class="example-progress-bar"><div class="example-progress-fill example-fill-success" style="width:99.9%"></div></div>
+          <span class="example-stat-value" style="color:var(--color-success)">99.9%</span>
+        </div>
+        <div class="example-stat">
+          <span class="example-stat-label">CPU</span>
+          <div class="example-progress-bar"><div class="example-progress-fill example-fill-warning" style="width:72%"></div></div>
+          <span class="example-stat-value" style="color:var(--color-warning)">72%</span>
+        </div>
+        <div class="example-stat">
+          <span class="example-stat-label">Memory</span>
+          <div class="example-progress-bar"><div class="example-progress-fill example-fill-destructive" style="width:91%"></div></div>
+          <span class="example-stat-value" style="color:var(--color-destructive)">91%</span>
+        </div>
+        <div class="example-stat">
+          <span class="example-stat-label">Disk</span>
+          <div class="example-progress-bar"><div class="example-progress-fill example-fill-info" style="width:45%"></div></div>
+          <span class="example-stat-value" style="color:var(--color-info)">45%</span>
+        </div>
+        <div class="example-stat">
+          <span class="example-stat-label">Network</span>
+          <div class="example-progress-bar"><div class="example-progress-fill example-fill-primary" style="width:58%"></div></div>
+          <span class="example-stat-value" style="color:var(--color-primary)">58%</span>
+        </div>
+      </div>
+
     </div>
   `
   return section
