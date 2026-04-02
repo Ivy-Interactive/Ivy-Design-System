@@ -16,11 +16,11 @@
             "type": "color"
           },
           "secondary-light": {
-            "value": "#dfe7e3",
+            "value": "#e5e5e5",
             "type": "color"
           },
           "secondary-dark": {
-            "value": "#26262b",
+            "value": "#262626",
             "type": "color"
           },
           "destructive": {
@@ -247,11 +247,11 @@
         "light": {
           "color": {
             "primary": {
-              "value": "{ivy-framework.source.color.primary}",
+              "value": "{ivy-framework.source.color.black}",
               "type": "color"
             },
             "primary-foreground": {
-              "value": "{ivy-framework.source.color.black}",
+              "value": "{ivy-framework.source.color.white}",
               "type": "color"
             },
             "secondary": {
@@ -351,7 +351,7 @@
         "dark": {
           "color": {
             "primary": {
-              "value": "{ivy-framework.source.color.primary}",
+              "value": "{ivy-framework.source.color.white}",
               "type": "color"
             },
             "primary-foreground": {
