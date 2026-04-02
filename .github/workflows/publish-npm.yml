@@ -43,7 +43,7 @@ jobs:
         run: |
           EXPECTED_VERSION="${{ steps.extract_version.outputs.VERSION }}"
           echo "Syncing package.json version to $EXPECTED_VERSION..."
-          npm version $EXPECTED_VERSION --no-git-tag-version
+          npm version $EXPECTED_VERSION --no-git-tag-version --allow-same-version
 
       - name: Check if npm version already exists
         id: check_npm_version
