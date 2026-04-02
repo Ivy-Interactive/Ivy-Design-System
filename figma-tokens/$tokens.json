@@ -24,19 +24,19 @@
             "type": "color"
           },
           "destructive": {
-            "value": "#dd5860",
+            "value": "#ef4444",
             "type": "color"
           },
           "success": {
-            "value": "#86d26f",
+            "value": "#22c55e",
             "type": "color"
           },
           "warning": {
-            "value": "#deb145",
+            "value": "#f59e0b",
             "type": "color"
           },
           "info": {
-            "value": "#4469c0",
+            "value": "#3b82f6",
             "type": "color"
           },
           "border": {
@@ -76,71 +76,71 @@
             "type": "color"
           },
           "red": {
-            "value": "#dd5860",
+            "value": "#ef4444",
             "type": "color"
           },
           "orange": {
-            "value": "#dc824d",
+            "value": "#f97316",
             "type": "color"
           },
           "amber": {
-            "value": "#deb145",
+            "value": "#f59e0b",
             "type": "color"
           },
           "yellow": {
-            "value": "#e5e04c",
+            "value": "#eab308",
             "type": "color"
           },
           "lime": {
-            "value": "#afd953",
+            "value": "#84cc16",
             "type": "color"
           },
           "green": {
-            "value": "#86d26f",
+            "value": "#22c55e",
             "type": "color"
           },
           "emerald": {
-            "value": "#76cd94",
+            "value": "#10b981",
             "type": "color"
           },
           "teal": {
-            "value": "#5b9ba8",
+            "value": "#14b8a6",
             "type": "color"
           },
           "cyan": {
-            "value": "#4469c0",
+            "value": "#06b6d4",
             "type": "color"
           },
           "sky": {
-            "value": "#373bda",
+            "value": "#0ea5e9",
             "type": "color"
           },
           "blue": {
-            "value": "#381ff4",
+            "value": "#3b82f6",
             "type": "color"
           },
           "indigo": {
-            "value": "#4b28e2",
+            "value": "#6366f1",
             "type": "color"
           },
           "violet": {
-            "value": "#6637d1",
+            "value": "#8b5cf6",
             "type": "color"
           },
           "purple": {
-            "value": "#844cc0",
+            "value": "#a855f7",
             "type": "color"
           },
           "fuchsia": {
-            "value": "#a361af",
+            "value": "#d946ef",
             "type": "color"
           },
           "pink": {
-            "value": "#c377a0",
+            "value": "#ec4899",
             "type": "color"
           },
           "rose": {
-            "value": "#e48e91",
+            "value": "#f43f5e",
             "type": "color"
           },
           "slate": {
