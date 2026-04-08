@@ -447,7 +447,7 @@
               "type": "color"
             },
             "popover": {
-              "value": "{ivy-framework.source.color.black}",
+              "value": "{ivy-framework.source.color.card-dark}",
               "type": "color"
             },
             "popover-foreground": {
