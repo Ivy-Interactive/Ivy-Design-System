@@ -41,6 +41,9 @@ interface PackageTokens {
   padding?: {
     padding?: ColorTokens;
   };
+  shadow?: {
+    shadow?: ColorTokens;
+  };
 }
 
 interface NormalizedTokens {
@@ -124,6 +127,7 @@ async function build() {
     const ivyFrameworkChromatic = ivyFramework.chromatic || {};
     const ivyFrameworkBorderRadius = ivyFramework["border-radius"] || {};
     const ivyFrameworkPadding = ivyFramework.padding || {};
+    const ivyFrameworkShadow = ivyFramework.shadow || {};
     const ivyFrameworkLightTheme = {
       theme: { light: ivyFramework.theme?.light || {} },
     };
@@ -185,6 +189,12 @@ async function build() {
       ivyFrameworkSource
     );
     await generateCSS(
+      ivyFrameworkShadow,
+      "dist/css/ivy-framework-shadow.css",
+      false,
+      ivyFrameworkSource
+    );
+    await generateCSS(
       ivyFrameworkLightTheme,
       "dist/css/ivy-framework-light.css",
       false,
@@ -220,6 +230,12 @@ async function build() {
       ivyFrameworkDarkTheme,
       "dist/css/ivy-framework-dark-flat.css",
       true,
+      ivyFrameworkSource
+    );
+    await generateFlatCSS(
+      ivyFrameworkShadow,
+      "dist/css/ivy-framework-shadow-flat.css",
+      false,
       ivyFrameworkSource
     );
 
@@ -306,6 +322,13 @@ async function build() {
       ivyFrameworkPadding,
       "dist/csharp/IvyFrameworkPaddingTokens.cs",
       "IvyFrameworkPaddingTokens",
+      "Ivy.Themes",
+      ivyFrameworkSource
+    );
+    await generateCSharp(
+      ivyFrameworkShadow,
+      "dist/csharp/IvyFrameworkShadowTokens.cs",
+      "IvyFrameworkShadowTokens",
       "Ivy.Themes",
       ivyFrameworkSource
     );

@@ -42,7 +42,7 @@ export function extractTokens(
     return tokens;
   }
 
-  const categories = ["color", "sizing", "border-radius", "padding"];
+  const categories = ["color", "sizing", "border-radius", "padding", "shadow"];
   for (const cat of categories) {
     if (obj[cat]) {
       tokens.push(...extractTokens(obj[cat], "", cat));
@@ -80,7 +80,7 @@ function resolveTokenReference(
   value: string,
   sourceTokens: Record<string, any>
 ): string {
-  const referenceMatch = value.match(/^\{(ivy-framework|ivy-web)\.source\.(color|sizing)\.([\w.-]+)\}$/);
+  const referenceMatch = value.match(/^\{(ivy-framework|ivy-web)\.source\.(color|sizing|shadow)\.([\w.-]+)\}$/);
   if (referenceMatch) {
     const category = referenceMatch[2];
     const tokenName = referenceMatch[3];

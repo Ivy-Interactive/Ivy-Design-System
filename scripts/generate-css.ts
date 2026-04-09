@@ -9,7 +9,7 @@ function resolveTokenReference(
 ): string {
   if (!sourceTokens) return value;
 
-  const referenceMatch = value.match(/^\{(ivy-framework|ivy-web)\.source\.(color|sizing)\.([\w.-]+)\}$/);
+  const referenceMatch = value.match(/^\{(ivy-framework|ivy-web)\.source\.(color|sizing|shadow)\.([\w.-]+)\}$/);
   if (referenceMatch) {
     const category = referenceMatch[2];
     const tokenName = referenceMatch[3];
@@ -46,7 +46,7 @@ function tokenToCSS(obj: any, prefix = "", sourceTokens?: Record<string, any>): 
     return css;
   }
 
-  const categories = ["color", "sizing", "border-radius", "padding"];
+  const categories = ["color", "sizing", "border-radius", "padding", "shadow"];
   for (const category of categories) {
     if (obj[category]) {
       css += tokenToCSS(obj[category], category, sourceTokens);

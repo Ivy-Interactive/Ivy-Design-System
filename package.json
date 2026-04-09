@@ -25,6 +25,8 @@
     "./css/ivy-framework-chromatic.css": "./dist/css/ivy-framework-chromatic.css",
     "./css/ivy-framework-neutral": "./dist/css/ivy-framework-neutral.css",
     "./css/ivy-framework-neutral.css": "./dist/css/ivy-framework-neutral.css",
+    "./css/ivy-framework-shadow": "./dist/css/ivy-framework-shadow.css",
+    "./css/ivy-framework-shadow.css": "./dist/css/ivy-framework-shadow.css",
     "./css/ivy-web": "./dist/css/ivy-web-light.css",
     "./css/ivy-web-light": "./dist/css/ivy-web-light.css",
     "./css/ivy-web-dark": "./dist/css/ivy-web-dark.css",
