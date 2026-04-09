@@ -3,6 +3,7 @@ import '@ivy-interactive/ivy-design-system/css/ivy-framework-light'
 import '@ivy-interactive/ivy-design-system/css/ivy-framework-dark'
 import '@ivy-interactive/ivy-design-system/css/ivy-framework-chromatic'
 import '@ivy-interactive/ivy-design-system/css/ivy-framework-neutral'
+import '@ivy-interactive/ivy-design-system/css/ivy-framework-shadow'
 import tokens from '@ivy-interactive/ivy-design-system/tokens'
 import './style.css'
 
@@ -306,6 +307,41 @@ function createExamples(): HTMLElement {
   return section
 }
 
+function createShadowExamples(): HTMLElement {
+  const section = document.createElement('section')
+  section.className = 'color-section shadow-section'
+  section.innerHTML = `
+    <h2>Box Shadow Tokens</h2>
+    <div class="shadow-grid">
+      <div class="shadow-card" style="box-shadow: var(--shadow-sm)">
+        <span class="shadow-label">sm</span>
+        <code>var(--shadow-sm)</code>
+      </div>
+      <div class="shadow-card" style="box-shadow: var(--shadow-md)">
+        <span class="shadow-label">md</span>
+        <code>var(--shadow-md)</code>
+      </div>
+      <div class="shadow-card" style="box-shadow: var(--shadow-lg)">
+        <span class="shadow-label">lg</span>
+        <code>var(--shadow-lg)</code>
+      </div>
+      <div class="shadow-card" style="box-shadow: var(--shadow-xl)">
+        <span class="shadow-label">xl</span>
+        <code>var(--shadow-xl)</code>
+      </div>
+      <div class="shadow-card" style="box-shadow: var(--shadow-2xl)">
+        <span class="shadow-label">2xl</span>
+        <code>var(--shadow-2xl)</code>
+      </div>
+      <div class="shadow-card" style="box-shadow: var(--shadow-inner)">
+        <span class="shadow-label">inner</span>
+        <code>var(--shadow-inner)</code>
+      </div>
+    </div>
+  `
+  return section
+}
+
 function init(): void {
   const app = document.getElementById('app')
   if (!app) return
@@ -357,6 +393,7 @@ function init(): void {
   }
 
   app.appendChild(createExamples())
+  app.appendChild(createShadowExamples())
 
   if (ivyFramework.chromatic?.color) {
     app.appendChild(createSection('Chromatic Colors', ivyFramework.chromatic.color))

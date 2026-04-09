@@ -515,3 +515,34 @@ header code {
   background-color: var(--color-primary);
 }
 
+/* Shadow tokens */
+.shadow-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 2rem;
+  margin-top: 1rem;
+}
+
+.shadow-card {
+  background: var(--color-background);
+  border-radius: 8px;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 120px;
+  justify-content: center;
+}
+
+.shadow-label {
+  font-weight: 600;
+  font-size: 1.125rem;
+  color: var(--color-foreground);
+}
+
+.shadow-card code {
+  font-size: 0.875rem;
+  color: var(--color-muted-foreground);
+}
+
