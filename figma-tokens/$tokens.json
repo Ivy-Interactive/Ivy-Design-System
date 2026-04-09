@@ -652,7 +652,7 @@
             "type": "color"
           },
           "rose-foreground": {
-            "value": "{ivy-framework.source.color.white}",
+            "value": "{ivy-framework.source.color.black}",
             "type": "color"
           }
         }
