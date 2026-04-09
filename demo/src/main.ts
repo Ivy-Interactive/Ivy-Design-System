@@ -99,6 +99,9 @@ function createSection(title: string, colors: ColorTokens, prefix: string = '--c
   grid.className = 'color-grid'
 
   for (const [name, token] of Object.entries(colors)) {
+    // Skip foreground tokens - they'll be used as text colors, not displayed as swatches
+    if (name.endsWith('-foreground')) continue
+
     if (token.type === 'color') {
       const cssVar = `${prefix}${name}`
       const resolvedValue = resolveTokenValue(token.value)
