@@ -103,8 +103,21 @@ function createSection(title: string, colors: ColorTokens, prefix: string = '--c
       const cssVar = `${prefix}${name}`
       const resolvedValue = resolveTokenValue(token.value)
       const sourceRef = extractSourceRef(token.value)
-      const forceWhite = ['border', 'border-secondary'].includes(name) ? '#ffffff' : undefined
-      const swatch = createColorSwatch(name, resolvedValue, cssVar, forceWhite, sourceRef, useResolvedBg)
+
+      // Check if there's a corresponding foreground color in the tokens
+      let forceTextColor: string | undefined
+      if (['border', 'border-secondary'].includes(name)) {
+        forceTextColor = '#ffffff'
+      } else {
+        const foregroundName = `${name}-foreground`
+        const foregroundToken = colors[foregroundName]
+        if (foregroundToken && foregroundToken.type === 'color') {
+          // Use the foreground variable from the design system
+          forceTextColor = `var(${prefix}${foregroundName})`
+        }
+      }
+
+      const swatch = createColorSwatch(name, resolvedValue, cssVar, forceTextColor, sourceRef, useResolvedBg)
       grid.appendChild(swatch)
     }
   }
