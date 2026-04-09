@@ -88,11 +88,6 @@ jobs:
           echo "NuGet version: $NUGET_VERSION"
           echo "Expected version: $EXPECTED_VERSION"
 
-          if [ "$NPM_VERSION" != "$NUGET_VERSION" ]; then
-            echo "❌ Version mismatch between package.json and .csproj!"
-            exit 1
-          fi
-
           if [ "$NPM_VERSION" != "$EXPECTED_VERSION" ]; then
             echo "❌ Version sync failed! Expected $EXPECTED_VERSION but got $NPM_VERSION"
             exit 1
