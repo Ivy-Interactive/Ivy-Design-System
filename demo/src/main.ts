@@ -4,6 +4,7 @@ import '@ivy-interactive/ivy-design-system/css/ivy-framework-dark'
 import '@ivy-interactive/ivy-design-system/css/ivy-framework-chromatic'
 import '@ivy-interactive/ivy-design-system/css/ivy-framework-neutral'
 import '@ivy-interactive/ivy-design-system/css/ivy-framework-shadow'
+import '@ivy-interactive/ivy-design-system/css/ivy-framework-color-scale'
 import tokens from '@ivy-interactive/ivy-design-system/tokens'
 import './style.css'
 
@@ -342,6 +343,105 @@ function createShadowExamples(): HTMLElement {
   return section
 }
 
+const SCALE_COLORS = [
+  // Chromatic
+  'red', 'orange', 'amber', 'yellow', 'lime', 'green', 'emerald', 'teal',
+  'cyan', 'sky', 'blue', 'indigo', 'violet', 'purple', 'fuchsia', 'pink', 'rose', 'ivy-green',
+  // Neutral
+  'slate', 'gray', 'zinc', 'neutral', 'stone',
+  // Semantic
+  'destructive', 'success', 'warning', 'info',
+]
+
+const SCALE_STEPS = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950]
+
+function createColorScaleSection(): HTMLElement {
+  const section = document.createElement('section')
+  section.className = 'color-section'
+
+  const header = document.createElement('h2')
+  header.textContent = 'Color Scales (50–950)'
+  section.appendChild(header)
+
+  const description = document.createElement('p')
+  description.style.color = 'var(--demo-muted)'
+  description.style.marginBottom = '1.5rem'
+  description.style.fontSize = '0.875rem'
+  description.innerHTML = 'Each color generates an oklch-based lightness scale. Use light steps for backgrounds and dark steps for foreground text — like <code>bg-green-50 text-green-800</code> in light mode, <code>bg-green-950 text-green-200</code> in dark mode.'
+  section.appendChild(description)
+
+  // Badge examples using the scale (shadcn-style)
+  const badgeSection = document.createElement('div')
+  badgeSection.className = 'scale-badge-section'
+  badgeSection.innerHTML = '<h3 style="margin-bottom: 0.75rem;">Badges using color scale</h3>'
+
+  const badgeGrid = document.createElement('div')
+  badgeGrid.className = 'scale-badge-grid'
+
+  for (const color of SCALE_COLORS) {
+    const badge = document.createElement('span')
+    badge.className = 'scale-badge'
+    badge.textContent = color.charAt(0).toUpperCase() + color.slice(1)
+    badge.style.backgroundColor = `var(--${color}-400)`
+    badge.style.color = `var(--${color}-900)`
+    badgeGrid.appendChild(badge)
+  }
+  badgeSection.appendChild(badgeGrid)
+
+  // Dark variant badges
+  const darkBadgeLabel = document.createElement('h3')
+  darkBadgeLabel.style.margin = '1.5rem 0 0.75rem'
+  darkBadgeLabel.textContent = 'Dark variant (reversed for dark backgrounds)'
+  badgeSection.appendChild(darkBadgeLabel)
+
+  const darkBadgeGrid = document.createElement('div')
+  darkBadgeGrid.className = 'scale-badge-grid'
+
+  for (const color of SCALE_COLORS) {
+    const badge = document.createElement('span')
+    badge.className = 'scale-badge'
+    badge.textContent = color.charAt(0).toUpperCase() + color.slice(1)
+    badge.style.backgroundColor = `var(--${color}-800)`
+    badge.style.color = `var(--${color}-100)`
+    darkBadgeGrid.appendChild(badge)
+  }
+  badgeSection.appendChild(darkBadgeGrid)
+  section.appendChild(badgeSection)
+
+  // Full scale strips
+  for (const color of SCALE_COLORS) {
+    const colorRow = document.createElement('div')
+    colorRow.className = 'scale-row'
+
+    const label = document.createElement('div')
+    label.className = 'scale-label'
+    label.textContent = color
+    colorRow.appendChild(label)
+
+    const strip = document.createElement('div')
+    strip.className = 'scale-strip'
+
+    for (const step of SCALE_STEPS) {
+      const cell = document.createElement('div')
+      cell.className = 'scale-cell'
+      cell.style.backgroundColor = `var(--${color}-${step})`
+      cell.style.color = step <= 400 ? `var(--${color}-900)` : `var(--${color}-50)`
+
+      const stepLabel = document.createElement('span')
+      stepLabel.className = 'scale-step'
+      stepLabel.textContent = String(step)
+      cell.appendChild(stepLabel)
+
+      strip.appendChild(cell)
+    }
+
+    colorRow.appendChild(strip)
+    section.appendChild(colorRow)
+  }
+
+  return section
+}
+
 function init(): void {
   const app = document.getElementById('app')
   if (!app) return
@@ -394,6 +494,7 @@ function init(): void {
 
   app.appendChild(createExamples())
   app.appendChild(createShadowExamples())
+  app.appendChild(createColorScaleSection())
 
   if (ivyFramework.chromatic?.color) {
     app.appendChild(createSection('Chromatic Colors', ivyFramework.chromatic.color))
