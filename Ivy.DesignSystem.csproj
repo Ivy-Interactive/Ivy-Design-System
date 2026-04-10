@@ -43,6 +43,7 @@
     <Compile Include="dist/csharp/IvyFrameworkChromaticTokens.cs" />
     <Compile Include="dist/csharp/IvyFrameworkBorderRadiusTokens.cs" />
     <Compile Include="dist/csharp/IvyFrameworkPaddingTokens.cs" />
+    <Compile Include="dist/csharp/IvyFrameworkShadowTokens.cs" />
     <Compile Include="dist/csharp/IvyFrameworkLightThemeTokens.cs" />
     <Compile Include="dist/csharp/IvyFrameworkDarkThemeTokens.cs" />
     <!-- Ivy Web tokens -->
