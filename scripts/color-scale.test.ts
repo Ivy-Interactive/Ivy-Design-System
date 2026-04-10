@@ -25,7 +25,7 @@ const sourceWithScale = {
         200: "#ffc2bc",
         300: "#fe9b93",
         400: "#f76c65",
-        500: "#dd3e3e",
+        500: "#ef4444", // scale[500] must equal the base value
         600: "#b63232",
         700: "#912626",
         800: "#6e1a1a",
@@ -83,6 +83,17 @@ describe("$tokens.json: color scale shape", () => {
     for (const name of expectedColors) {
       expect(sourceColors[name], `${name} token exists`).toBeDefined();
       expect(sourceColors[name].scale, `${name} has scale`).toBeDefined();
+    }
+  });
+
+  it("scale[500] equals the base color value for every scalable token", async () => {
+    const raw = JSON.parse(await readFile("figma-tokens/$tokens.json", "utf-8"));
+    const sourceColors =
+      raw["ivy-framework"]["ivy-framework"]["source"]["color"];
+
+    for (const [name, token] of Object.entries(sourceColors) as [string, any][]) {
+      if (!token.scale) continue;
+      expect(token.scale["500"], `${name} scale[500]`).toBe(token.value);
     }
   });
 
@@ -252,6 +263,13 @@ describe("extractTokens: color scale", () => {
       expect(shade!.propertyName).toBe(`Red_${step}`);
       expect(shade!.category).toBe("color");
     }
+  });
+
+  it("scale[500] token value matches the base color value", () => {
+    const tokens = extractTokens(sourceWithScale);
+    const red500 = tokens.find(t => t.name === "red-500");
+    expect(red500).toBeDefined();
+    expect(red500!.value).toBe("#ef4444"); // same as sourceWithScale.color.red.value
   });
 
   it("tokens without scale produce only the base token", () => {
