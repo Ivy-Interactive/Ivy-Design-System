@@ -60,8 +60,14 @@ function tokenToCSS(obj: any, prefix = "", sourceTokens?: Record<string, any>): 
     if (typeof value === "object" && value !== null) {
       if ("value" in value && "type" in value) {
         const varName = prefix ? `${prefix}-${key}` : key;
-        const resolvedValue = resolveTokenReference(value.value as string, sourceTokens);
+        const resolvedValue = resolveTokenReference((value as any).value as string, sourceTokens);
         css += `  --${varName}: ${resolvedValue};\n`;
+        // Emit scale shades if present (e.g. --color-red-50, --color-red-100, ...)
+        if ("scale" in value && typeof (value as any).scale === "object") {
+          for (const [step, shade] of Object.entries((value as any).scale as Record<string, string>)) {
+            css += `  --${varName}-${step}: ${shade};\n`;
+          }
+        }
       } else if (key !== "theme") {
         const newPrefix = prefix ? `${prefix}-${key}` : key;
         css += tokenToCSS(value, newPrefix, sourceTokens);

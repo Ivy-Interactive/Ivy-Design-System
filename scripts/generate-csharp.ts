@@ -59,10 +59,21 @@ export function extractTokens(
         const propertyName = toPascalCase(key);
         tokens.push({
           name: varName,
-          value: value.value as string,
+          value: (value as any).value as string,
           propertyName,
           category,
         });
+        // Emit scale shade tokens if present (e.g. red-50, red-100, ...)
+        if ("scale" in value && typeof (value as any).scale === "object") {
+          for (const [step, shade] of Object.entries((value as any).scale as Record<string, string>)) {
+            tokens.push({
+              name: `${varName}-${step}`,
+              value: shade,
+              propertyName: `${propertyName}_${step}`,
+              category,
+            });
+          }
+        }
       } else if (key !== "theme") {
         const newPrefix = prefix ? `${prefix}-${key}` : key;
         tokens.push(...extractTokens(value, newPrefix, category));

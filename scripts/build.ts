@@ -1,6 +1,5 @@
 import { generateCSS } from "./generate-css.js";
 import { generateFlatCSS } from "./generate-flat-css.js";
-import { generateColorScaleCSS } from "./generate-color-scale.js";
 import { generateTailwind } from "./generate-tailwind.js";
 import { generateTypes } from "./generate-types.js";
 import { generateCSharp } from "./generate-csharp.js";
@@ -239,18 +238,6 @@ async function build() {
       false,
       ivyFrameworkSource
     );
-
-    // Generate color scale (50-950) for chromatic, neutral, and semantic colors
-    console.log("🌈 Generating color scales...");
-    await generateColorScaleCSS(
-      [
-        { tokens: ivyFrameworkChromatic, sourceTokens: ivyFrameworkSource },
-        { tokens: ivyFrameworkNeutral, sourceTokens: ivyFrameworkSource },
-        { tokens: ivyFrameworkLightTheme.theme.light, sourceTokens: ivyFrameworkSource },
-      ],
-      "dist/css/ivy-framework-color-scale.css",
-    );
-    console.log("");
 
     // Generate CSS for ivy-web
     console.log("📝 Generating CSS for ivy-web...");
