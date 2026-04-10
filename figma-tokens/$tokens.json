@@ -166,6 +166,10 @@
           "stone": {
             "value": "#78716c",
             "type": "color"
+          },
+          "ivy-green": {
+            "value": "#00cc92",
+            "type": "color"
           }
         },
         "sizing": {
@@ -652,6 +656,14 @@
             "type": "color"
           },
           "rose-foreground": {
+            "value": "{ivy-framework.source.color.white}",
+            "type": "color"
+          },
+          "ivy-green": {
+            "value": "{ivy-framework.source.color.ivy-green}",
+            "type": "color"
+          },
+          "ivy-green-foreground": {
             "value": "{ivy-framework.source.color.black}",
             "type": "color"
           }
