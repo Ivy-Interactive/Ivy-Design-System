@@ -613,6 +613,10 @@
               "value": "{ivy-framework.source.color.border}",
               "type": "color"
             },
+            "border-secondary": {
+              "value": "{ivy-framework.source.color.border-secondary}",
+              "type": "color"
+            },
             "input": {
               "value": "{ivy-framework.source.color.border}",
               "type": "color"
@@ -715,6 +719,10 @@
             },
             "border": {
               "value": "{ivy-framework.source.color.card-foreground-light}",
+              "type": "color"
+            },
+            "border-secondary": {
+              "value": "{ivy-framework.source.color.border-secondary}",
               "type": "color"
             },
             "input": {
