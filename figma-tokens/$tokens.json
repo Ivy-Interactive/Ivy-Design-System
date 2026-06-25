@@ -574,7 +574,7 @@
               "type": "color"
             },
             "destructive-foreground": {
-              "value": "{ivy-framework.source.color.black}",
+              "value": "{ivy-framework.source.color.white}",
               "type": "color"
             },
             "success": {
@@ -963,7 +963,7 @@
             "type": "color"
           },
           "rose-foreground": {
-            "value": "{ivy-framework.source.color.white}",
+            "value": "{ivy-framework.source.color.black}",
             "type": "color"
           },
           "ivy-green": {
