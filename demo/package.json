@@ -9,8 +9,8 @@
     "preview": "vite preview"
   },
   "devDependencies": {
-    "typescript": "^5.7.3",
-    "vite": "^6.2.5"
+    "typescript": "^7.0.2",
+    "vite": "^8.3.8"
   },
   "dependencies": {
     "@ivy-interactive/ivy-design-system": "file:.."
