@@ -84,10 +84,10 @@
     "url": "https://github.com/Ivy-Interactive/Ivy-Design-System/issues"
   },
   "devDependencies": {
-    "@types/node": "^25.0.3",
-    "@vitest/ui": "^4.0.10",
+    "@types/node": "^26.6.6",
+    "@vitest/ui": "^5.1.1",
     "tsx": "^4.19.2",
-    "typescript": "^5.7.3",
-    "vitest": "^4.0.10"
+    "typescript": "^7.0.2",
+    "vitest": "^5.1.1"
   }
 }
